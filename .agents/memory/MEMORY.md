@@ -1,0 +1,1 @@
+- [Orval zod codegen conflict](orval-zod-conflict.md) — single mode + no schemas option required to avoid TS2308 duplicate export errors; codegen rewrites index.ts, always fix it after.

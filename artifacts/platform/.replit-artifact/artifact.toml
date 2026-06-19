@@ -1,0 +1,25 @@
+kind = "web"
+previewPath = "/platform/"
+title = "Sync-It-Better"
+version = "1.0.0"
+
+[[services]]
+localPort = 3000
+name = "web"
+paths = ["/platform/"]
+
+[services.env]
+PORT = "3000"
+BASE_PATH = "/platform/"
+
+[services.development]
+run = "pnpm --filter @workspace/platform run dev"
+
+[services.production]
+serve = "static"
+
+[services.production.build]
+args = ["pnpm", "--filter", "@workspace/platform", "run", "build"]
+
+[services.production.build.env]
+NODE_ENV = "production"
