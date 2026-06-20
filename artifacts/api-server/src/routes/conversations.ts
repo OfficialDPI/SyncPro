@@ -10,6 +10,7 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 import * as esbuild from "esbuild";
 import { parse } from "parse5";
+import { parse as parseYaml } from "yaml";
 import {
   CreateConversationBody,
   GetConversationParams,
@@ -483,6 +484,16 @@ function validateSQL(sql: string): ValidationResult {
   const hasInsert = clean.toLowerCase().includes("insert into");
   if (!hasCreateTable && !hasInsert) {
     errors.push("SQL Script does not contain common schema/seed commands (CREATE TABLE or INSERT INTO).");
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+function validateYAML(yamlStr: string): ValidationResult {
+  const errors: string[] = [];
+  try {
+    parseYaml(yamlStr);
+  } catch (err: any) {
+    errors.push(`YAML parse error: ${err.message || err}`);
   }
   return { valid: errors.length === 0, errors };
 }
@@ -1390,6 +1401,8 @@ JSON Schema:
               }
             } else if (agentName === "db") {
               validation = validateSQL(finalCode);
+            } else if (agentName === "deploy") {
+              validation = validateYAML(finalCode);
             }
 
             if (validation.valid) {
@@ -1690,6 +1703,10 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
                   fixValid = validateHTML(finalFixedCode).valid;
                 } else if (fileToFix.endsWith(".css")) {
                   fixValid = validateCSS(finalFixedCode).valid;
+                } else if (fileToFix.endsWith(".yml") || fileToFix.endsWith(".yaml")) {
+                  fixValid = validateYAML(finalFixedCode).valid;
+                } else if (fileToFix.endsWith(".sql")) {
+                  fixValid = validateSQL(finalFixedCode).valid;
                 }
 
                 if (fixValid) {

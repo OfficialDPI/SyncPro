@@ -126,6 +126,9 @@ importers:
       pino-http:
         specifier: ^10.5.0
         version: 10.5.0
+      yaml:
+        specifier: ^2.4.5
+        version: 2.8.4
     devDependencies:
       '@types/cookie-parser':
         specifier: ^1.4.10
