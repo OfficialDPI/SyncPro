@@ -9,6 +9,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 const execAsync = promisify(exec);
 import * as esbuild from "esbuild";
+import { parse } from "parse5";
 import {
   CreateConversationBody,
   GetConversationParams,
@@ -205,14 +206,113 @@ async function continueStream(
 function validateHTML(html: string): ValidationResult {
   const errors: string[] = [];
   const clean = html.trim();
+  const lower = clean.toLowerCase();
 
-  if (!clean.toLowerCase().includes("</html>") || !clean.toLowerCase().includes("</body>")) {
-    errors.push("Missing closing </body> or </html> tags at the end of the document.");
+  // 1. Tag count verification
+  const countOpeningTags = (tag: string) => {
+    const regex = new RegExp(`<${tag}\\b`, "gi");
+    return (lower.match(regex) || []).length;
+  };
+  const countClosingTags = (tag: string) => {
+    const regex = new RegExp(`</${tag}>`, "gi");
+    return (lower.match(regex) || []).length;
+  };
+
+  const htmlOpen = countOpeningTags("html");
+  const htmlClose = countClosingTags("html");
+  if (htmlOpen !== 1) {
+    errors.push(`HTML must contain exactly one <html> opening tag. Found ${htmlOpen}.`);
   }
-  if (!clean.toLowerCase().includes("<html") || !clean.toLowerCase().includes("<body")) {
-    errors.push("Missing opening <html> or <body> tags.");
+  if (htmlClose !== 1) {
+    errors.push(`HTML must contain exactly one </html> closing tag. Found ${htmlClose}.`);
   }
 
+  const headOpen = countOpeningTags("head");
+  const headClose = countClosingTags("head");
+  if (headOpen !== 1) {
+    errors.push(`HTML must contain exactly one <head> opening tag. Found ${headOpen}.`);
+  }
+  if (headClose !== 1) {
+    errors.push(`HTML must contain exactly one </head> closing tag. Found ${headClose}.`);
+  }
+
+  const bodyOpen = countOpeningTags("body");
+  const bodyClose = countClosingTags("body");
+  if (bodyOpen !== 1) {
+    errors.push(`HTML must contain exactly one <body> opening tag. Found ${bodyOpen}.`);
+  }
+  if (bodyClose !== 1) {
+    errors.push(`HTML must contain exactly one </body> closing tag. Found ${bodyClose}.`);
+  }
+
+  // 2. Unfinished comments
+  let commentStart = 0;
+  while ((commentStart = clean.indexOf("<!--", commentStart)) !== -1) {
+    const commentEnd = clean.indexOf("-->", commentStart + 4);
+    if (commentEnd === -1) {
+      errors.push("Unfinished comment block (<!-- without matching -->).");
+      break;
+    }
+    commentStart = commentEnd + 3;
+  }
+
+  // 3. Unfinished script/style tags
+  let scriptStart = 0;
+  while ((scriptStart = lower.indexOf("<script", scriptStart)) !== -1) {
+    const tagEnd = clean.indexOf(">", scriptStart);
+    if (tagEnd === -1) {
+      errors.push("Malformed <script> opening tag.");
+      break;
+    }
+    const isSelfClosing = clean.substring(scriptStart, tagEnd + 1).endsWith("/>");
+    if (!isSelfClosing) {
+      const scriptEnd = lower.indexOf("</script>", tagEnd);
+      if (scriptEnd === -1) {
+        errors.push("Unfinished <script> tag (missing </script>).");
+        break;
+      }
+      scriptStart = scriptEnd + 9;
+    } else {
+      scriptStart = tagEnd + 1;
+    }
+  }
+
+  let styleStart = 0;
+  while ((styleStart = lower.indexOf("<style", styleStart)) !== -1) {
+    const tagEnd = clean.indexOf(">", styleStart);
+    if (tagEnd === -1) {
+      errors.push("Malformed <style> opening tag.");
+      break;
+    }
+    const isSelfClosing = clean.substring(styleStart, tagEnd + 1).endsWith("/>");
+    if (!isSelfClosing) {
+      const styleEnd = lower.indexOf("</style>", tagEnd);
+      if (styleEnd === -1) {
+        errors.push("Unfinished <style> tag (missing </style>).");
+        break;
+      }
+      styleStart = styleEnd + 8;
+    } else {
+      styleStart = tagEnd + 1;
+    }
+  }
+
+  // 4. Run parse5 AST parser error checks
+  try {
+    const parse5Errors: string[] = [];
+    parse(clean, {
+      onParseError(err) {
+        parse5Errors.push(`parse5 error [${err.code}]: at position ${err.startOffset}`);
+      }
+    });
+    if (parse5Errors.length > 0) {
+      errors.push(...parse5Errors);
+    }
+  } catch (err: any) {
+    errors.push(`parse5 crash: ${err.message}`);
+  }
+
+  // 5. Classic stack-based checks for attributes, quotes, tag balance, and tag names
   const selfClosing = new Set(["img", "input", "br", "hr", "meta", "link", "source", "embed", "param", "track", "area", "col", "base"]);
   const tagRegex = /<\/?([a-zA-Z0-9:-]+)([^>]*)>/g;
   const stack: string[] = [];
@@ -230,6 +330,10 @@ function validateHTML(html: string): ValidationResult {
       const singleQuotes = (attrs.match(/'/g) || []).length;
       if (doubleQuotes % 2 !== 0 && singleQuotes % 2 !== 0) {
         errors.push(`Malformed attributes in tag <${tag}>: unmatched quotes.`);
+      }
+
+      if (doubleQuotes % 2 !== 0 || singleQuotes % 2 !== 0) {
+        errors.push(`Malformed attributes in tag <${tag}>: unclosed quote(s).`);
       }
 
       const idMatch = attrs.match(/id\s*=\s*["']([^"']+)["']/i);
@@ -1356,10 +1460,18 @@ JSON Schema:
             }
           }
 
+          const tmpPath = safePath + ".tmp";
           try {
             await fs.mkdir(path.dirname(safePath), { recursive: true });
-            await fs.writeFile(safePath, finalCode, "utf-8");
-            res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
+            await fs.writeFile(tmpPath, finalCode, "utf-8");
+
+            if (validation.valid) {
+              await fs.rename(tmpPath, safePath);
+              res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
+            } else {
+              await fs.unlink(tmpPath).catch(() => {});
+              res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Validation failed for \`${filename}\`. Discarded staging write and left original intact.*` })}\n\n`);
+            }
           } catch (e) {
             req.log.error({ e }, "File write failed");
           }
@@ -1503,6 +1615,14 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
 
         while (buildAttempt < 3) {
           try {
+            // Auto format staging files using Prettier before building
+            try {
+              await execAsync("pnpm exec prettier --write .", { cwd: tempProjectPath, timeout: 30000 });
+            } catch (prettierErr: any) {
+              req.log.warn({ prettierErr }, "Prettier formatting failed in staging");
+              throw new Error(`Formatting Error: Prettier failed to format files due to a syntax error:\n${prettierErr.stderr || prettierErr.message}`);
+            }
+
             await execAsync("pnpm run build", {
               cwd: tempProjectPath,
               timeout: 120000,
@@ -1560,9 +1680,24 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
                   finalFixedCode = closedCode;
                 }
               }
+
+              // Transaction-based write for the fixed file
+              const fixTmpPath = fileToFixPath + ".tmp";
               try {
-                await fs.writeFile(fileToFixPath, finalFixedCode, "utf-8");
-                responses.code = responses.code.replace(currentContent, finalFixedCode);
+                await fs.writeFile(fixTmpPath, finalFixedCode, "utf-8");
+                let fixValid = true;
+                if (fileToFix.endsWith(".html")) {
+                  fixValid = validateHTML(finalFixedCode).valid;
+                } else if (fileToFix.endsWith(".css")) {
+                  fixValid = validateCSS(finalFixedCode).valid;
+                }
+
+                if (fixValid) {
+                  await fs.rename(fixTmpPath, fileToFixPath);
+                  responses.code = responses.code.replace(currentContent, finalFixedCode);
+                } else {
+                  await fs.unlink(fixTmpPath).catch(() => {});
+                }
               } catch {}
             }
           }
@@ -1584,8 +1719,8 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
           await fs.mkdir(permProjectPath, { recursive: true });
           await fs.writeFile(path.join(permProjectPath, "build-errors.txt"), lastBuildError, "utf-8");
           
+          // Transactional: If compilation fails, discard staging changes and do NOT copy broken files to permanent workspace.
           if (fsSync.existsSync(tempProjectPath)) {
-            await copyDir(tempProjectPath, permProjectPath);
             await fs.rm(tempProjectPath, { recursive: true, force: true });
           }
         }
