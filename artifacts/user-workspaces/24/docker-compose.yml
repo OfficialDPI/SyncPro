@@ -1,0 +1,24 @@
+// ❌ Syntactically invalid React component for error testing
+import React, { useState } from 'react'; // missing closed bracket? No, it's fine.
+
+// Missing closing bracket for component
+function App() {
+  const [count, setCount] = useState(0);
+
+  // Unclosed JSX element
+  return (
+    <div className="container">
+      <h1>Hello, error-prone app!</h1>
+      <button onClick={() => setCount(count + 1)}>
+        Click me: {count
+      </button> // ← Missing closing brace for JSX expression
+
+      {/* Invalid hook call inside conditional */}
+      {count > 5 && (
+        useEffect(() => {
+          console.log("Effect ran"); // Hook not at top level
+        })
+      )}
+
+      {/* Missing closing tag for div */}
+} // ← Missing closing brace for function body

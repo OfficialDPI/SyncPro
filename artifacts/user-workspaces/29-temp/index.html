@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkLanding — Modern SaaS Platform</title>
+    <meta name="description" content="DarkLanding is a cutting-edge platform built for speed, security, and seamless integration. Launch your next project with confidence.">
+    <meta property="og:title" content="DarkLanding — Modern SaaS Platform">
+    <meta property="og:description" content="Built for speed, security, and seamless integration. Launch with confidence.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://og-image-darklanding.vercel.app/hero.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DarkLanding — Modern SaaS Platform">
+    <meta name="twitter:description" content="Built for speed, security, and seamless integration. Launch with confidence.">
+    <meta name="theme-color" content="#0d0d12">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#0d0d12',
+                        'bg-secondary': '#1a1a2e',
+                        'accent': '#00d4ff',
+                        'accent-glow': '#00d4ff33',
+                        'surface': '#141420',
+                        'border-subtle': '#ffffff0d',
+                        'text-muted': '#94a3b8',
+                    },
+                    fontFamily: {
+                        'heading': ['Outfit', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 10s ease-in-out 2s infinite',
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                        'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
+                        'glow-shift': 'glowShift 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '25%': { transform: 'translateY(-20px) rotate(1deg)' },
+                            '50%': { transform: 'translateY(-8px) rotate(-1deg)' },
+                            '75%': { transform: 'translateY(-24px) rotate(0.5deg)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '0.6' },
+                            '50%': { opacity: '1' },
+                        },
+                        glowShift: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --bg-primary: #0d0d12;
+            --bg-secondary: #1a1a2e;
+            --accent: #00d4ff;
+            --accent-glow: #00d4ff33;
+            --surface: #141420;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: #e2e8f0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffffff1a;
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffffff2e;
+        }
+
+        /* Focus ring */
+        *:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 16px;
+            z-index: 9999;
+            background: var(--accent);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: top 0.2s ease;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        /* Hero glow orb */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-orb--primary {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #00d4ff4d 0%, transparent 70%);
+            top: -150px;
+            right: -100px;
+        }
+        .glow-orb--secondary {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #7c3aed4d 0%, transparent 70%);
+            bottom: -80px;
+            left: -60px;
+        }
+
+        /* Card hover glow */
+        .feature-card {
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 40px #00d4ff1a, 0 8px 32px #0000004d;
+            border-color: #00d4ff40 !important;
+        }
+
+        /* CTA button pulse ring */
+        .cta-pulse-ring {
+            animation: pulseRing 2.5s cubic-bezier(0.25, 0, 0.35, 1) infinite;
+        }
+        @keyframes pulseRing {
+            0% {
+                box-shadow: 0 0 0 0 #00d4ff80;
+            }
+            70% {
+                box-shadow: 0 0 0 22px #00d4ff00;
+            }
+            100% {
+                box-shadow: 0 0 0 0 #00d4ff00;
+            }
+        }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+        .modal-panel {
+            transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2), opacity 0.3s ease;
+        }
+        .modal-hidden .modal-panel {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+        }
+        .modal-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #00d4ff 0%, #a78bfa 60%, #f472b6 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowShift 6s ease-in-out infinite;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+        }
+        .mobile-menu.closed {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 767px) {
+            .glow-orb--primary {
+                width: 300px;
+                height: 300px;
+                top: -80px;
+                right: -60px;
+                filter: blur(80px);
+            }
+            .glow-orb--secondary {
+                width: 220px;
+                height: 220px;
+                bottom: -40px;
+                left: -40px;
+                filter: blur(70px);
+            }
+        }
+    </style>
+</head>
+<body class="font-body bg-bg-primary text-gray-200 antialiased overflow-x-hidden">
+
+    <!-- Skip to content -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <header role="banner" class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/80 backdrop-blur-xl border-b border-border-subtle">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" aria-label="Main navigation">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5 group" aria-label="DarkLanding home">
+                <div class="w-9 h-9 rounded-lg bg-accent flex items-center justify-center transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-accent-glow">
+                    <i data-lucide="zap" class="w-5 h-5 text-black" stroke-width="2.5"></i>
+                </div>
+                <span class="font-heading font-bold text-xl text-white tracking-tight">Dark<span class="text-accent">Landing</span></span>
+            </a>
+
+            <!-- Desktop nav links -->
+            <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-text-muted">
+                <li><a href="#hero" class="hover:text-white transition-colors duration-200">Home</a></li>
+                <li><a href="#features" class="hover:text-white transition-colors duration-200">Features</a></li>
+                <li><a href="#cta-section" class="hover:text-white transition-colors duration-200">Get Started</a></li>
+                <li>
+                    <button id="nav-cta-btn" class="px-5 py-2.5 bg-accent text-black font-semibold rounded-full text-sm hover:bg-white transition-all duration-300 hover:shadow-lg hover:shadow-accent-glow focus-visible:outline-2 focus-visible:outline-accent" aria-label="Open signup modal">
+                        Join Waitlist
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Mobile hamburger -->
+            <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors duration-200" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle mobile menu">
+                <i data-lucide="menu" id="menu-icon-open" class="w-6 h-6 text-white"></i>
+                <i data-lucide="x" id="menu-icon-close" class="w-6 h-6 text-white hidden"></i>
+            </button>
+        </nav>
+
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="mobile-menu closed fixed inset-0 top-16 bg-bg-primary/98 backdrop-blur-xl z-40 md:hidden flex flex-col items-center justify-center gap-8" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
+            <ul class="flex flex-col items-center gap-6 text-lg font-medium text-text-muted">
+                <li><a href="#hero" class="hover:text-white transition-colors duration-200 mobile-nav-link">Home</a></li>
+                <li><a href="#features" class="hover:text-white transition-colors duration-200 mobile-nav-link">Features</a></li>
+                <li><a href="#cta-section" class="hover:text-white transition-colors duration-200 mobile-nav-link">Get Started</a></li>
+                <li>
+                    <button id="mobile-cta-btn" class="mt-4 px-7 py-3 bg-accent text-black font-semibold rounded-full text-base hover:bg-white transition-all duration-300 hover:shadow-lg hover:shadow-accent-glow mobile-nav-link" aria-label="Open signup modal">
+                        Join Waitlist
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main id="main-content" role="main">
+
+        <!-- ==================== HERO SECTION ==================== -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden" aria-labelledby="hero-heading">
+            <!-- Glow orbs -->
+            <div class="glow-orb glow-orb--primary animate-float" aria-hidden="true"></div>
+            <div class="glow-orb glow-orb--secondary animate-float-delayed" aria-hidden="true"></div>
+
+            <!-- Subtle grid pattern overlay -->
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" aria-hidden="true" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+            <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border-subtle bg-white/5 text-sm font-medium text-text-muted mb-8 animate-fade-in-up" style="animation-delay: 0.1s; animation-fill-mode: backwards;">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse-soft" aria-hidden="true"></span>
+                    Now in Public Beta
+                </div>
+
+                <!-- Headline -->
+                <h1 id="hero-heading" class="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-white mb-6 animate-fade-in-up" style="animation-delay: 0.2s; animation-fill-mode: backwards;">
+                    Build Faster.<br>
+                    <span class="gradient-text">Ship Smarter.</span>
+                </h1>
+
+                <!-- Subtext -->
+                <p class="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-10 animate-fade-in-up" style="animation-delay: 0.35s; animation-fill-mode: backwards;">
+                    The all-in-one platform engineered for speed, fortified with enterprise-grade security,
+                    and designed to integrate seamlessly into your existing workflow.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: backwards;">
+                    <button id="hero-cta-btn" class="cta-pulse-ring px-8 py-4 bg-accent text-black font-semibold rounded-full text-lg hover:bg-white transition-all duration-300 hover:shadow-xl hover:shadow-accent-glow focus-visible:outline-2 focus-visible:outline-accent inline-flex items-center gap-2" aria-label="Open signup modal from hero">
+                        Get Early Access
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                    <a href="#features" class="px-8 py-4 bg-white/5 border border-border-subtle text-white font-medium rounded-full text-lg hover:bg-white/10 hover:border-white/20 transition-all duration-300 inline-flex items-center gap-2">
+                        Explore Features
+                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                    </a>
+                </div>
+
+                <!-- Trusted by / stats -->
+                <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-lg mx-auto animate-fade-in-up" style="animation-delay: 0.65s; animation-fill-mode: backwards;">
+                    <div class="text-center">
+                        <span class="block font-heading font-bold text-3xl text-white">99.9%</span>
+                        <span class="text-xs text-text-muted">Uptime SLA</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-heading font-bold text-3xl text-white">&lt;10ms</span>
+                        <span class="text-xs text-text-muted">Latency</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-heading font-bold text-3xl text-white">50K+</span>
+                        <span class="text-xs text-text-muted">Developers</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-heading font-bold text-3xl text-white">SOC 2</span>
+                        <span class="text-xs text-text-muted">Certified</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FEATURES SECTION ==================== -->
+        <section id="features" class="relative py-20 sm:py-28 lg:py-36 px-4 sm:px-6 lg:px-8" aria-labelledby="features-heading">
+            <div class="max-w-7xl mx-auto">
+                <!-- Section header -->
+                <div class="text-center mb-16 sm:mb-20">
+                    <span class="text-accent font-semibold text-sm uppercase tracking-widest">Why DarkLanding</span>
+                    <h2 id="features-heading" class="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white mt-3 mb-4">
+                        Everything you need,<br>nothing you don't.
+                    </h2>
+                    <p class="text-text-muted max-w-xl mx-auto text-base sm:text-lg">
+                        Purpose-built tools that accelerate your workflow without the bloat.
+                    </p>
+                </div>
+
+                <!-- Feature cards grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                    <!-- Card 1: Lightning Fast -->
+                    <article class="feature-card group bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 text-left relative overflow-hidden" tabindex="0" aria-labelledby="feature-1-title">
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="zap" class="w-6 h-6 text-accent" stroke-width="2"></i>
+                        </div>
+                        <h3 id="feature-1-title" class="font-heading font-semibold text-xl text-white mb-3">Lightning Fast</h3>
+                        <p class="text-text-muted text-sm leading-relaxed">Sub-10ms response times powered by our global edge network. Your users will never wait.</p>
+                    </article>
+
+                    <!-- Card 2: Secure by Default -->
+                    <article class="feature-card group bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 text-left relative overflow-hidden" tabindex="0" aria-labelledby="feature-2-title">
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-accent" stroke-width="2"></i>
+                        </div>
+                        <h3 id="feature-2-title" class="font-heading font-semibold text-xl text-white mb-3">Secure by Default</h3>
+                        <p class="text-text-muted text-sm leading-relaxed">End-to-end encryption, SOC 2 compliance, and automatic threat detection keep your data safe.</p>
+                    </article>
+
+                    <!-- Card 3: Seamless Integration -->
+                    <article class="feature-card group bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 text-left relative overflow-hidden" tabindex="0" aria-labelledby="feature-3-title">
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="layers" class="w-6 h-6 text-accent" stroke-width="2"></i>
+                        </div>
+                        <h3 id="feature-3-title" class="font-heading font-semibold text-xl text-white mb-3">Seamless Integration</h3>
+                        <p class="text-text-muted text-sm leading-relaxed">Connect with 200+ tools via native integrations. Slack, GitHub, Vercel — we speak their language.</p>
+                    </article>
+
+                    <!-- Card 4: Real-time Analytics -->
+                    <article class="feature-card group bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 text-left relative overflow-hidden" tabindex="0" aria-labelledby="feature-4-title">
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="bar-chart-3" class="w-6 h-6 text-accent" stroke-width="2"></i>
+                        </div>
+                        <h3 id="feature-4-title" class="font-heading font-semibold text-xl text-white mb-3">Real-time Analytics</h3>
+                        <p class="text-text-muted text-sm leading-relaxed">Live dashboards with actionable insights. Track performance, errors, and user behavior as it happens.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CTA SECTION ==================== -->
+        <section id="cta-section" class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8" aria-labelledby="cta-heading">
+            <div class="max-w-3xl mx-auto text-center relative z-10">
+                <div class="bg-surface border border-border-subtle rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+                    <!-- Subtle inner glow -->
+                    <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background: radial-gradient(ellipse at center, #00d4ff08 0%, transparent 70%);"></div>
+
+                    <h2 id="cta-heading" class="relative font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-4">
+                        Ready to launch?
+                    </h2>
+                    <p class="relative text-text-muted text-base sm:text-lg mb-8 max-w-lg mx-auto">
+                        Join thousands of developers already building on DarkLanding.
+                        Early access includes 3 months free.
+                    </p>
+                    <button id="cta-section-btn" class="relative cta-pulse-ring px-10 py-4 bg-accent text-black font-semibold rounded-full text-lg hover:bg-white transition-all duration-300 hover:shadow-xl hover:shadow-accent-glow focus-visible:outline-2 focus-visible:outline-accent inline-flex items-center gap-2" aria-label="Open signup modal from CTA section">
+                        Join the Waitlist
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </button>
+                    <p class="relative text-text-muted text-xs mt-4">No credit card required · Free forever tier available</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer role="contentinfo" class="border-t border-border-subtle py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-md bg-accent flex items-center justify-center">
+                    <i data-lucide="zap" class="w-4 h-4 text-black" stroke-width="2.5"></i>
+                </div>
+                <span class="font-heading font-semibold text-white text-sm">DarkLanding</span>
+            </div>
+            <p class="text-text-muted text-xs">© 2025 DarkLanding Inc. All rights reserved.</p>
+            <div class="flex items-center gap-6 text-text-muted text-xs">
+                <a href="#" class="hover:text-white transition-colors duration-200">Privacy</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Terms</a>
+                <a href="#" class="hover:text-white transition-colors duration-200">Status</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== SIGNUP MODAL ==================== -->
+    <div id="signup-modal" class="modal-hidden fixed inset-0 z-[100] flex items-center justify-center p-4 modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="modal-backdrop-overlay" aria-hidden="true"></div>
+
+        <!-- Panel -->
+        <div class="modal-panel relative bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl z-10">
+            <!-- Close button -->
+            <button id="modal-close-btn" class="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 text-text-muted hover:text-white" aria-label="Close signup modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Modal content -->
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="mail" class="w-7 h-7 text-accent" stroke-width="1.8"></i>
+                </div>
+                <h3 id="modal-title" class="font-heading font-bold text-2xl text-white mb-2">Get Early Access</h3>
+                <p class="text-text-muted text-sm">Enter your email and we'll send you an invite.</p>
+            </div>
+
+            <!-- Form -->
+            <form id="signup-form" class="space-y-4" novalidate>
+                <div>
+                    <label for="email-input" class="block text-sm font-medium text-gray-300 mb-1.5">Email address</label>
+                    <input type="email" id="email-input" name="email" required autocomplete="email" placeholder="you@example.com"
+                    class="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-xl text-white placeholder:text-gray-500 focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 outline-none text-sm"
+                    aria-describedby="email-error">
+                    <p id="email-error" class="text-red-400 text-xs mt-1.5 hidden" role="alert"></p>
+                </div>
+                <div>
+                    <label for="name-input" class="block text-sm font-medium text-gray-300 mb-1.5">Name <span class="text-text-muted font-normal">(optional)</span></label>
+                    <input type="text" id="name-input" name="name" autocomplete="name" placeholder="John Doe"
+                    class="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-xl text-white placeholder:text-gray-500 focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200 outline-none text-sm">
+                </div>
+                <button type="submit" id="submit-btn"
+                class="w-full py-3.5 bg-accent text-black font-semibold rounded-xl hover:bg-white transition-all duration-300 hover:shadow-lg hover:shadow-accent-glow focus-visible:outline-2 focus-visible:outline-accent text-base flex items-center justify-center gap-2">
+                <span id="submit-btn-text">Request Invite</span>
+                <i data-lucide="send" class="w-4 h-4" id="submit-btn-icon"></i>
+                <span id="submit-spinner" class="hidden inline-block w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" aria-hidden="true"></span>
+            </button>
+        </form>
+
+        <!-- Success state (hidden by default) -->
+        <div id="success-state" class="hidden text-center py-4">
+            <div class="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle-2" class="w-8 h-8 text-green-400" stroke-width="2"></i>
+            </div>
+            <h4 class="font-heading font-bold text-xl text-white mb-2">You're on the list!</h4>
+            <p class="text-text-muted text-sm">Check your inbox for a confirmation email.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+    (function() {
+        // --- Initialize Lucide icons ---
+        lucide.createIcons();
+
+        // --- DOM references ---
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        const signupModal = document.getElementById('signup-modal');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalBackdropOverlay = document.getElementById('modal-backdrop-overlay');
+        const signupForm = document.getElementById('signup-form');
+        const emailInput = document.getElementById('email-input');
+        const emailError = document.getElementById('email-error');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitBtnText = document.getElementById('submit-btn-text');
+        const submitBtnIcon = document.getElementById('submit-btn-icon');
+        const submitSpinner = document.getElementById('submit-spinner');
+        const successState = document.getElementById('success-state');
+        const allModalTriggers = [
+            document.getElementById('nav-cta-btn'),
+            document.getElementById('mobile-cta-btn'),
+            document.getElementById('hero-cta-btn'),
+            document.getElementById('cta-section-btn'),
+        ];
+        const allMobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        let lastFocusedBeforeModal = null;
+
+        // --- Mobile menu toggle ---
+        function openMobileMenu() {
+            mobileMenu.classList.remove('closed');
+            menuIconOpen.classList.add('hidden');
+            menuIconClose.classList.remove('hidden');
+            mobileMenuToggle.setAttribute('aria-expanded', 'true');
+            mobileMenu.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu
+                mobileMenu.classList.add('closed');
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            mobileMenuToggle.addEventListener('click', () => {
+                const expanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+                if (expanded) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+
+            // Close mobile menu when a navigation link is clicked
+            allMobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+
+            // Close mobile menu on Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenuToggle.getAttribute('aria-expanded') === 'true') {
+                    closeMobileMenu();
+                }
+            });
+
+            // --- Modal logic ---
+            function openModal() {
+                lastFocusedBeforeModal = document.activeElement;
+                signupModal.classList.remove('modal-hidden');
+                signupModal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+                // Reset form state
+                signupForm.reset();
+                signupForm.style.display = 'block';
+                successState.classList.add('hidden');
+                emailError.classList.add('hidden');
+                emailInput.classList.remove('border-red-500');
+                submitBtn.disabled = false;
+                submitBtnText.textContent = 'Request Invite';
+                submitBtnIcon.classList.remove('hidden');
+                submitSpinner.classList.add('hidden');
+                // Focus email input
+                setTimeout(() => emailInput.focus(), 100);
+            }
+
+            function closeModal() {
+                signupModal.classList.add('modal-hidden');
+                signupModal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                // Return focus to the trigger element
+                if (lastFocusedBeforeModal) {
+                    lastFocusedBeforeModal.focus();
+                }
+            }
+
+            // Trigger modal from all CTA buttons
+            allModalTriggers.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openModal();
+                    });
+                }
+            });
+
+            // Close modal events
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalBackdropOverlay.addEventListener('click', closeModal);
+
+            // Close modal on Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && signupModal.getAttribute('aria-hidden') === 'false') {
+                    closeModal();
+                }
+            });
+
+            // Trap focus inside modal
+            signupModal.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab' && signupModal.getAttribute('aria-hidden') === 'false') {
+                    const focusableElements = signupModal.querySelectorAll(
+                        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                    );
+                    const firstFocusable = focusableElements[0];
+                    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstFocusable) {
+                            e.preventDefault();
+                            lastFocusable.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastFocusable) {
+                            e.preventDefault();
+                            firstFocusable.focus();
+                        }
+                    }
+                }
+            });
+
+            // --- Form validation ---
+            function validateEmail(email) {
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            }
+
+            function showEmailError(message) {
+                emailError.textContent = message;
+                emailError.classList.remove('hidden');
+                emailInput.classList.add('border-red-500');
+                emailInput.setAttribute('aria-invalid', 'true');
+            }
+
+            function clearEmailError() {
+                emailError.classList.add('hidden');
+                emailInput.classList.remove('border-red-500');
+                emailInput.removeAttribute('aria-invalid');
+            }
+
+            emailInput.addEventListener('input', () => {
+                if (emailInput.value.trim() !== '') {
+                    clearEmailError();
+                }
+            });
+
+            // --- Mock API submission ---
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = emailInput.value.trim();
+                clearEmailError();
+
+                // Validate email
+                if (!email) {
+                    showEmailError('Email address is required.');
+                    emailInput.focus();
+                    return;
+                }
+                if (!validateEmail(email)) {
+                    showEmailError('Please enter a valid email address.');
+                    emailInput.focus();
+                    return;
+                }
+
+                // Simulate loading state
+                submitBtn.disabled = true;
+                submitBtnText.textContent = 'Submitting...';
+                submitBtnIcon.classList.add('hidden');
+                submitSpinner.classList.remove('hidden');
+
+                // Mock API fetch with 1.5s delay
+                try {
+                    await new Promise((resolve) => setTimeout(resolve, 1500));
+                    // Simulate success
+                    signupForm.style.display = 'none';
+                    successState.classList.remove('hidden');
+                    // Recreate icons inside success state
+                    lucide.createIcons();
+                } catch (error) {
+                    // Simulated error (not expected to trigger in mock)
+                    showEmailError('Something went wrong. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtnText.textContent = 'Request Invite';
+                    submitBtnIcon.classList.remove('hidden');
+                    submitSpinner.classList.add('hidden');
+                }
+            });
+
+            // --- Smooth scroll for anchor links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                        });
+                        // Update URL hash without jumping
+                        history.pushState(null, null, targetId);
+                    }
+                });
+            });
+
+            // --- Intersection Observer for animation triggers (optional enhancement) ---
+            const observerOptions = {
+                threshold: 0.15,
+                rootMargin: '0px 0px -50px 0px',
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature cards for subtle enter animations
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // --- Handle resize to close mobile menu on desktop ---
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && mobileMenuToggle.getAttribute('aria-expanded') === 'true') {
+                    closeMobileMenu();
+                }
+            });
+
+            // --- Keyboard accessibility: close mobile menu with Escape ---
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu.getAttribute('aria-hidden') === 'false') {
+                    closeMobileMenu();
+                }
+            });
+
+            console.log('DarkLanding — All interactive systems ready.');
+        })();
+    </script>
+</body>
+</html>

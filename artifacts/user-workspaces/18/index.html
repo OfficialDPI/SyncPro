@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DarkLanding — A modern, high-performance SaaS platform built for speed, security, and scale. Launch faster with our developer-first toolkit.">
+    <meta property="og:title" content="DarkLanding — Build Faster. Scale Smarter.">
+    <meta property="og:description" content="A modern, high-performance SaaS platform built for speed, security, and scale. Launch faster with our developer-first toolkit.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://darklanding.io">
+    <meta property="og:image" content="https://darklanding.io/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DarkLanding — Build Faster. Scale Smarter.">
+    <meta name="twitter:description" content="A modern, high-performance SaaS platform built for speed, security, and scale.">
+    <title>DarkLanding — Build Faster. Scale Smarter.</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#7c3aed',
+                            'purple-light': '#a78bfa',
+                            blue: '#60a5fa',
+                            dark: '#0a0a0f',
+                            'dark-card': '#111118',
+                            'dark-border': '#1e1e2a',
+                            'dark-muted': '#16161f',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+                        'slide-in-right': 'slideInRight 0.4s ease-out forwards',
+                        'slide-out-right': 'slideOutRight 0.3s ease-in forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        glowPulse: {
+                            '0%, 100%': { boxShadow: '0 0 40px rgba(124,58,237,0.3), 0 0 80px rgba(124,58,237,0.1)' },
+                            '50%': { boxShadow: '0 0 60px rgba(124,58,237,0.5), 0 0 120px rgba(124,58,237,0.2)' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        slideOutRight: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a3a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a4f;
+        }
+
+        /* Global Styles */
+        html {
+            scroll-behavior: smooth;
+            background-color: #0a0a0f;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #0a0a0f;
+            color: #e2e2e9;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Focus Ring */
+        *:focus-visible {
+            outline: 2px solid #a78bfa;
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 16px;
+            z-index: 9999;
+            background: #7c3aed;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: top 0.2s ease;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        /* Gradient Text Utility */
+        .text-gradient {
+            background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Glow Orb */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-orb--purple {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.6) 0%, transparent 70%);
+            top: -10%;
+            left: -10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        .glow-orb--blue {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.5) 0%, transparent 70%);
+            bottom: -5%;
+            right: -8%;
+            animation: float 10s ease-in-out infinite 2s;
+        }
+
+        /* Card Hover */
+        .feature-card {
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.15), 0 0 0 1px rgba(124, 58, 237, 0.3) inset;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            visibility: hidden;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+            visibility: visible;
+        }
+        .mobile-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Button Pulse */
+        .btn-pulse {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        /* Testimonial Card */
+        .testimonial-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7c3aed, #60a5fa, transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .testimonial-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Input Styles */
+        input::placeholder {
+            color: #5a5a6e;
+        }
+        input:focus {
+            border-color: #7c3aed !important;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
+        }
+
+        /* Section reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            .glow-orb--purple {
+                width: 250px;
+                height: 250px;
+                top: -15%;
+                left: -20%;
+            }
+            .glow-orb--blue {
+                width: 200px;
+                height: 200px;
+                bottom: -10%;
+                right: -15%;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#0a0a0f] text-[#e2e2e9] antialiased">
+
+    <!-- Skip to Content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header / Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-[#1e1e2a]/60 bg-[#0a0a0f]/80 backdrop-blur-xl" role="banner">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2.5 group" aria-label="DarkLanding home">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-600 transition-all duration-300 group-hover:bg-purple-500 group-hover:shadow-lg group-hover:shadow-purple-600/30">
+                        <i data-lucide="zap" class="h-5 w-5 text-white" aria-hidden="true"></i>
+                    </div>
+                    <span class="font-display text-xl font-bold tracking-tight text-white">Dark<span class="text-purple-400">Landing</span></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+                    <a href="#features" class="text-sm font-medium text-gray-400 transition-colors duration-200 hover:text-white">Features</a>
+                    <a href="#testimonials" class="text-sm font-medium text-gray-400 transition-colors duration-200 hover:text-white">Testimonials</a>
+                    <a href="#pricing" class="text-sm font-medium text-gray-400 transition-colors duration-200 hover:text-white">Pricing</a>
+                    <a href="#cta" class="text-sm font-medium text-gray-400 transition-colors duration-200 hover:text-white">Get Started</a>
+                </nav>
+
+                <!-- Desktop CTA -->
+                <div class="hidden md:flex items-center gap-3">
+                    <button type="button" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400">Sign In</button>
+                    <button type="button" class="rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/25 focus-visible:outline-2 focus-visible:outline-purple-400">Start Free Trial</button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-toggle" class="flex md:hidden items-center justify-center rounded-lg p-2 text-gray-400 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <i data-lucide="menu" class="h-6 w-6" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" aria-hidden="true"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu fixed right-0 top-0 z-50 h-full w-72 bg-[#111118] border-l border-[#1e1e2a] p-6 pt-20 shadow-2xl" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+        <button id="mobile-menu-close" class="absolute top-4 right-4 flex items-center justify-center rounded-lg p-2 text-gray-400 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-purple-400" aria-label="Close navigation menu">
+            <i data-lucide="x" class="h-6 w-6" aria-hidden="true"></i>
+        </button>
+        <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
+            <a href="#features" class="mobile-nav-link text-lg font-medium text-gray-300 transition-colors hover:text-white">Features</a>
+            <a href="#testimonials" class="mobile-nav-link text-lg font-medium text-gray-300 transition-colors hover:text-white">Testimonials</a>
+            <a href="#pricing" class="mobile-nav-link text-lg font-medium text-gray-300 transition-colors hover:text-white">Pricing</a>
+            <a href="#cta" class="mobile-nav-link text-lg font-medium text-gray-300 transition-colors hover:text-white">Get Started</a>
+            <hr class="border-[#1e1e2a] my-2">
+            <a href="#" class="text-lg font-medium text-gray-300 transition-colors hover:text-white">Sign In</a>
+            <button type="button" class="w-full rounded-lg bg-purple-600 px-5 py-3 text-base font-semibold text-white transition-all hover:bg-purple-500">Start Free Trial</button>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content" tabindex="-1">
+
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16" aria-labelledby="hero-heading">
+            <!-- Glow Orbs -->
+            <div class="glow-orb glow-orb--purple" aria-hidden="true"></div>
+            <div class="glow-orb glow-orb--blue" aria-hidden="true"></div>
+
+            <!-- Grid Pattern Overlay -->
+            <div class="absolute inset-0 -z-10 opacity-[0.03]" aria-hidden="true" style="background-image: radial-gradient(circle, #7c3aed 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+            <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 text-center">
+                <!-- Badge -->
+                <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-[#1e1e2a] bg-[#111118]/80 px-4 py-1.5 text-sm font-medium text-purple-300 backdrop-blur-sm animate-fade-in" style="animation-delay: 0.1s; animation-fill-mode: both;">
+                    <span class="flex h-2 w-2 rounded-full bg-green-400 animate-pulse" aria-hidden="true"></span>
+                    Now in Public Beta — Join 12,000+ developers
+                </div>
+
+                <!-- Heading -->
+                <h1 id="hero-heading" class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.05] animate-fade-in-up" style="animation-delay: 0.2s; animation-fill-mode: both;">
+                    Build <span class="text-gradient">faster</span>.<br class="sm:hidden"> Ship <span class="text-gradient">smarter</span>.
+                </h1>
+
+                <!-- Subheading -->
+                <p class="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-gray-400 leading-relaxed animate-fade-in-up" style="animation-delay: 0.35s; animation-fill-mode: both;">
+                    The all-in-one platform that gives your team superpowers. Deploy globally, collaborate in real-time, and iterate at the speed of thought — all from a single, beautifully crafted dashboard.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.5s; animation-fill-mode: both;">
+                    <button type="button" class="btn-pulse w-full sm:w-auto rounded-xl bg-purple-600 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-purple-500 hover:shadow-2xl hover:shadow-purple-600/30 focus-visible:outline-2 focus-visible:outline-purple-400 inline-flex items-center justify-center gap-2" aria-label="Start your free 14-day trial">
+                        Start Free Trial
+                        <i data-lucide="arrow-right" class="h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="w-full sm:w-auto rounded-xl border border-[#2a2a3a] bg-transparent px-8 py-4 text-base font-semibold text-gray-300 transition-all duration-300 hover:border-purple-500/50 hover:text-white hover:bg-[#111118] focus-visible:outline-2 focus-visible:outline-purple-400 inline-flex items-center justify-center gap-2">
+                        <i data-lucide="play-circle" class="h-5 w-5" aria-hidden="true"></i>
+                        Watch Demo
+                    </button>
+                </div>
+
+                <!-- Trusted By -->
+                <p class="mt-16 text-xs font-medium uppercase tracking-widest text-gray-600 animate-fade-in" style="animation-delay: 0.7s; animation-fill-mode: both;">Trusted by engineering teams at</p>
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-8 sm:gap-12 animate-fade-in" style="animation-delay: 0.8s; animation-fill-mode: both;" aria-label="Trusted by leading companies">
+                    <span class="text-lg font-bold text-gray-500 opacity-60">AcmeCorp</span>
+                    <span class="text-lg font-bold text-gray-500 opacity-60">TechFlow</span>
+                    <span class="text-lg font-bold text-gray-500 opacity-60">NexGen</span>
+                    <span class="text-lg font-bold text-gray-500 opacity-60">CloudBase</span>
+                    <span class="text-lg font-bold text-gray-500 opacity-60">DataSync</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="relative py-20 sm:py-28 lg:py-36" aria-labelledby="features-heading">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center reveal">
+                    <p class="text-sm font-semibold uppercase tracking-widest text-purple-400">Features</p>
+                    <h2 id="features-heading" class="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">Everything you need.<br class="sm:hidden"> <span class="text-gradient">Zero fluff.</span></h2>
+                    <p class="mt-4 max-w-xl mx-auto text-gray-400 text-base sm:text-lg">Purpose-built tools that eliminate friction from your workflow so you can focus on what matters — shipping great products.</p>
+                </div>
+
+                <!-- Feature Grid -->
+                <div class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <!-- Feature 1 -->
+                    <article class="feature-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.1s;">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600/15 text-purple-400 mb-5">
+                            <i data-lucide="rocket" class="h-6 w-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Lightning Deploys</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Push to production in under 2 seconds. Our global edge network ensures your app is always fast, always available.</p>
+                    </article>
+
+                    <!-- Feature 2 -->
+                    <article class="feature-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.2s;">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400 mb-5">
+                            <i data-lucide="shield" class="h-6 w-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Enterprise Security</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">SOC 2 Type II compliant with end-to-end encryption, DDoS protection, and granular RBAC built right in.</p>
+                    </article>
+
+                    <!-- Feature 3 -->
+                    <article class="feature-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.3s;">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 mb-5">
+                            <i data-lucide="globe" class="h-6 w-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Global Edge</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">35+ regions worldwide with intelligent routing. Your users get sub-50ms latency no matter where they are.</p>
+                    </article>
+
+                    <!-- Feature 4 -->
+                    <article class="feature-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.4s;">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/15 text-amber-400 mb-5">
+                            <i data-lucide="zap" class="h-6 w-6" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Real-time Analytics</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">Beautiful dashboards with live metrics. Monitor performance, track errors, and gain insights instantly.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials / Social Proof -->
+        <section id="testimonials" class="relative py-20 sm:py-28 lg:py-36 border-t border-[#1e1e2a]/40" aria-labelledby="testimonials-heading">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center reveal">
+                    <p class="text-sm font-semibold uppercase tracking-widest text-blue-400">Testimonials</p>
+                    <h2 id="testimonials-heading" class="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">Loved by <span class="text-gradient">developers</span>.</h2>
+                </div>
+
+                <div class="mt-14 grid gap-6 md:grid-cols-3">
+                    <!-- Testimonial 1 -->
+                    <blockquote class="testimonial-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.1s;">
+                        <div class="flex items-center gap-1 mb-4" aria-label="5 out of 5 stars">
+                            <span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-5">"DarkLanding completely transformed our deployment pipeline. What used to take 20 minutes now happens in seconds. Our team velocity has never been higher."</p>
+                        <footer class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-sm">SJ</div>
+                            <div>
+                                <cite class="text-sm font-semibold text-white not-italic">Sarah Johnson</cite>
+                                <p class="text-xs text-gray-500">Lead Engineer, TechFlow</p>
+                            </div>
+                        </footer>
+                    </blockquote>
+
+                    <!-- Testimonial 2 -->
+                    <blockquote class="testimonial-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.2s;">
+                        <div class="flex items-center gap-1 mb-4" aria-label="5 out of 5 stars">
+                            <span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-5">"The real-time analytics alone are worth it. We caught a critical performance regression within minutes of deployment and rolled back instantly."</p>
+                        <footer class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-sm">MK</div>
+                            <div>
+                                <cite class="text-sm font-semibold text-white not-italic">Michael Kim</cite>
+                                <p class="text-xs text-gray-500">CTO, CloudBase</p>
+                            </div>
+                        </footer>
+                    </blockquote>
+
+                    <!-- Testimonial 3 -->
+                    <blockquote class="testimonial-card reveal rounded-2xl border border-[#1e1e2a] bg-[#111118] p-6 sm:p-8" style="transition-delay: 0.3s;">
+                        <div class="flex items-center gap-1 mb-4" aria-label="5 out of 5 stars">
+                            <span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span><span class="text-amber-400">★</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-5">"We switched from three separate tools to just DarkLanding. The consolidation saved us $4k/month and our workflow is now genuinely enjoyable."</p>
+                        <footer class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white font-bold text-sm">AL</div>
+                            <div>
+                                <cite class="text-sm font-semibold text-white not-italic">Aisha Liu</cite>
+                                <p class="text-xs text-gray-500">VP Engineering, DataSync</p>
+                            </div>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA / Newsletter Section -->
+        <section id="cta" class="relative py-20 sm:py-28 lg:py-36 border-t border-[#1e1e2a]/40" aria-labelledby="cta-heading">
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center reveal">
+                <p class="text-sm font-semibold uppercase tracking-widest text-purple-400">Get Early Access</p>
+                <h2 id="cta-heading" class="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">Ready to <span class="text-gradient">launch</span>?</h2>
+                <p class="mt-4 text-gray-400 text-base sm:text-lg max-w-lg mx-auto">Join our private beta and get 3 months free. No credit card required. Cancel anytime.</p>
+
+                <!-- Newsletter Form -->
+                <form id="newsletter-form" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" novalidate aria-label="Newsletter signup form">
+                    <div class="flex-1 relative">
+                        <label for="email-input" class="sr-only">Email address</label>
+                        <input
+                        id="email-input"
+                        type="email"
+                        required
+                        autocomplete="email"
+                        placeholder="you@company.com"
+                        class="w-full rounded-xl border border-[#2a2a3a] bg-[#111118] px-5 py-4 text-sm text-white placeholder-gray-500 transition-all duration-200 focus:border-purple-500 focus:outline-none focus:ring-0"
+                        aria-describedby="email-error email-success"
+                        >
+                        <p id="email-error" class="hidden mt-2 text-xs text-red-400 text-left pl-1" role="alert"></p>
+                        <p id="email-success" class="hidden mt-2 text-xs text-emerald-400 text-left pl-1" role="status"></p>
+                    </div>
+                    <button
+                    type="submit"
+                    class="w-full sm:w-auto rounded-xl bg-purple-600 px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/25 focus-visible:outline-2 focus-visible:outline-purple-400 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap inline-flex items-center justify-center gap-2"
+                    id="submit-btn"
+                    >
+                    Get Started
+                    <i data-lucide="chevron-right" class="h-4 w-
+</div>
+</section>
+</main>
+</body>
+</html>

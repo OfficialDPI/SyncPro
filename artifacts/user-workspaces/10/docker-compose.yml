@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: counter-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://backend:5000
+      - THEME=dark
+      - PRIMARY_COLOR=bg-purple-600
+      - ACCENT_COLOR=text-blue-500
+      - BACKGROUND_COLOR=#0d0d12
+    depends_on:
+      - backend
+    networks:
+      - counter-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: counter-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgres://counter_user:counter_pass@postgres:5432/counter_db
+      - PORT=5000
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - counter-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: counter-postgres
+    environment:
+      - POSTGRES_USER=counter_user
+      - POSTGRES_PASSWORD=counter_pass
+      - POSTGRES_DB=counter_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - counter-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U counter_user -d counter_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  counter-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

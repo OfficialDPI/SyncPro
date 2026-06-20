@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkLanding — Build Faster. Scale Smarter.</title>
+    <meta name="description" content="DarkLanding is a modern, dark-themed landing page template designed for startups, SaaS, and creators. Build faster and scale smarter with our powerful platform.">
+    <meta name="author" content="DarkLanding">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="DarkLanding — Build Faster. Scale Smarter.">
+    <meta property="og:description" content="A modern, dark-themed landing page designed for startups and SaaS. Explore features, get started, and scale your product.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://darklanding.dev/og-image.png">
+    <meta property="og:url" content="https://darklanding.dev">
+    <meta property="og:site_name" content="DarkLanding">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DarkLanding — Build Faster. Scale Smarter.">
+    <meta name="twitter:description" content="A modern, dark-themed landing page designed for startups and SaaS. Explore features, get started, and scale your product.">
+    <meta name="twitter:image" content="https://darklanding.dev/og-image.png">
+
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        'display': ['Outfit', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand': {
+                            'primary': '#8b5cf6',
+                            'accent': '#3b82f6',
+                            'bg': '#0f172a',
+                            'surface': '#1e293b',
+                            'surface-light': '#334155',
+                            'text': '#f1f5f9',
+                            'muted': '#94a3b8',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-down': 'slideDown 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': {opacity: '0', transform: 'translateY(30px)'},
+                            '100%': {opacity: '1', transform: 'translateY(0)'},
+                        },
+                        fadeIn: {
+                            '0%': {opacity: '0'},
+                            '100%': {opacity: '1'},
+                        },
+                        glowPulse: {
+                            '0%, 100%': {boxShadow: '0 0 40px 10px rgba(139, 92, 246, 0.15)'},
+                            '50%': {boxShadow: '0 0 80px 25px rgba(139, 92, 246, 0.3)'},
+                        },
+                        float: {
+                            '0%, 100%': {transform: 'translateY(0px)'},
+                            '50%': {transform: 'translateY(-20px)'},
+                        },
+                        slideDown: {
+                            '0%': {opacity: '0', transform: 'translateY(-10px)'},
+                            '100%': {opacity: '1', transform: 'translateY(0)'},
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Smooth focus ring */
+        *:focus-visible {
+            outline: 2px solid #8b5cf6 !important;
+            outline-offset: 3px !important;
+            border-radius: 4px;
+        }
+
+        /* Hero gradient orb */
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .hero-orb--primary {
+            width: 400px;
+            height: 400px;
+            background: rgba(139, 92, 246, 0.3);
+            top: -100px;
+            right: -100px;
+        }
+        .hero-orb--accent {
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.25);
+            bottom: -80px;
+            left: -80px;
+        }
+
+        /* CTA glow effect */
+        .cta-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-glow::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.4), transparent, rgba(59, 130, 246, 0.3), transparent);
+            animation: spinGlow 8s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes spinGlow {
+            to { transform: rotate(360deg); }
+        }
+        .cta-glow > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Feature card hover lift */
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        /* Button shimmer */
+        .btn-shimmer {
+            background-size: 200% 100%;
+            background-image: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 25%, #8b5cf6 50%, #7c3aed 75%, #8b5cf6 100%);
+            transition: background-position 0.6s ease;
+        }
+        .btn-shimmer:hover {
+            background-position: -100% 0;
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 16px;
+            z-index: 100;
+            background: #8b5cf6;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: top 0.3s ease;
+        }
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        /* Mobile menu backdrop */
+        .mobile-menu-backdrop {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-text font-sans antialiased min-h-screen">
+
+    <!-- Skip to Content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ==================== HEADER / NAV ==================== -->
+    <header role="banner" class="sticky top-0 z-50 transition-shadow duration-300" id="site-header">
+        <nav role="navigation" aria-label="Main navigation" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2.5 group" aria-label="DarkLanding home">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="zap" class="w-5 h-5 text-white" aria-hidden="true"></i>
+                    </div>
+                    <span class="font-display font-bold text-xl text-white tracking-tight">Dark<span class="text-brand-primary">Landing</span></span>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <ul class="hidden md:flex items-center gap-1" role="list">
+                    <li><a href="#features" class="px-4 py-2 text-sm font-medium text-brand-muted hover:text-white rounded-lg transition-colors duration-200 hover:bg-white/5">Features</a></li>
+                    <li><a href="#stats" class="px-4 py-2 text-sm font-medium text-brand-muted hover:text-white rounded-lg transition-colors duration-200 hover:bg-white/5">Stats</a></li>
+                    <li><a href="#cta" class="px-4 py-2 text-sm font-medium text-brand-muted hover:text-white rounded-lg transition-colors duration-200 hover:bg-white/5">Get Started</a></li>
+                    <li><a href="#footer" class="px-4 py-2 text-sm font-medium text-brand-muted hover:text-white rounded-lg transition-colors duration-200 hover:bg-white/5">Contact</a></li>
+                </ul>
+
+                <!-- Desktop CTA -->
+                <a href="#cta" class="hidden md:inline-flex items-center gap-2 bg-brand-primary text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-violet-600 transition-all duration-200 hover:shadow-lg hover:shadow-brand-primary/25 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
+                    Start Free Trial
+                    <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+
+                <!-- Mobile Hamburger -->
+                <button
+                id="mobile-menu-btn"
+                aria-expanded="false"
+                aria-controls="mobile-menu"
+                aria-label="Open menu"
+                class="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-brand-muted hover:text-white hover:bg-white/10 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-brand-primary"
+                >
+                <i data-lucide="menu" class="w-6 h-6" id="menu-icon-open" aria-hidden="true"></i>
+                <i data-lucide="x" class="w-6 h-6 hidden" id="menu-icon-close" aria-hidden="true"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden animate-slide-down" role="menu" aria-label="Mobile navigation">
+        <div class="mobile-menu-backdrop fixed inset-0 top-16 z-40" id="mobile-backdrop"></div>
+        <nav class="relative z-50 bg-brand-surface border-t border-white/5 shadow-2xl mx-4 mt-2 rounded-2xl overflow-hidden">
+            <ul class="py-3 px-2 space-y-1" role="list">
+                <li><a href="#features" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-brand-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors duration-200" role="menuitem">Features</a></li>
+                <li><a href="#stats" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-brand-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors duration-200" role="menuitem">Stats</a></li>
+                <li><a href="#cta" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-brand-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors duration-200" role="menuitem">Get Started</a></li>
+                <li><a href="#footer" class="mobile-nav-link block px-4 py-3 text-sm font-medium text-brand-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors duration-200" role="menuitem">Contact</a></li>
+                <li class="pt-2"><a href="#cta" class="mobile-nav-link block px-4 py-3 text-sm font-semibold text-white bg-brand-primary rounded-xl text-center hover:bg-violet-600 transition-colors duration-200" role="menuitem">Start Free Trial</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<main id="main-content" tabindex="-1">
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section aria-labelledby="hero-heading" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+        <!-- Gradient Orbs -->
+        <div class="hero-orb hero-orb--primary" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb--accent" aria-hidden="true"></div>
+
+        <!-- Grid pattern overlay -->
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTM2IDE4YzAtMS4xLS45LTItMi0ycy0yIC45LTIgMiAuOSAyIDIgMiAyLS45IDItMnptMC0xMmMwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDIgLjkgMiAyIDIgMi0uOSAyLTJ6bS0yNCAwYzAtMS4xLS45LTItMi0ycy0yIC45LTIgMiAuOSAyIDIgMiAyLS45IDItMnptMCAxMmMwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDIgLjkgMiAyIDIgMi0uOSAyLTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" aria-hidden="true"></div>
+
+        <div class="relative z-10 max-w-4xl mx-auto text-center">
+            <!-- Badge -->
+            <div class="animate-fade-in inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <span class="text-xs sm:text-sm font-medium text-brand-muted">Now in Public Beta — <span class="text-white">Free to start</span></span>
+            </div>
+
+            <!-- Heading -->
+            <h1 id="hero-heading" class="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.05] mb-6 animate-fade-in-up">
+                Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-brand-accent to-brand-primary bg-[length:200%_100%] animate-pulse">Faster</span>.<br class="sm:hidden"> Scale Smarter.
+            </h1>
+
+            <!-- Subtext -->
+            <p class="text-base sm:text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-10 animate-fade-in-up" style="animation-delay: 0.15s;">
+                The all-in-one platform that empowers developers and creators to ship production-grade applications at lightning speed — without compromising on quality.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+                <a href="#cta" class="btn-shimmer w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-primary text-white font-semibold text-base px-8 py-3.5 rounded-xl hover:shadow-2xl hover:shadow-brand-primary/30 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
+                    Get Started Free
+                    <i data-lucide="arrow-right" class="w-5 h-5" aria-hidden="true"></i>
+                </a>
+                <a href="#features" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-white/15 text-white font-semibold text-base px-8 py-3.5 rounded-xl hover:bg-white/5 hover:border-white/25 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg">
+                    <i data-lucide="play-circle" class="w-5 h-5" aria-hidden="true"></i>
+                    Watch Demo
+                </a>
+            </div>
+
+            <!-- Trusted by -->
+            <div class="mt-16 animate-fade-in-up" style="animation-delay: 0.45s;">
+                <p class="text-xs font-medium text-brand-muted/60 uppercase tracking-widest mb-5">Trusted by innovative teams</p>
+                <div class="flex flex-wrap items-center justify-center gap-8 opacity-50">
+                    <span class="text-lg font-display font-bold text-white/40">Acme Corp</span>
+                    <span class="text-lg font-display font-bold text-white/40">TechFlow</span>
+                    <span class="text-lg font-display font-bold text-white/40">NovaScale</span>
+                    <span class="text-lg font-display font-bold text-white/40">Quantum</span>
+                    <span class="text-lg font-display font-bold text-white/40">Vertex</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FEATURES SECTION ==================== -->
+    <section id="features" aria-labelledby="features-heading" class="py-20 sm:py-28 lg:py-32 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center mb-16 sm:mb-20">
+                <span class="inline-block text-xs font-semibold uppercase tracking-widest text-brand-primary mb-4">Why DarkLanding</span>
+                <h2 id="features-heading" class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-5">
+                    Everything you need<br class="hidden sm:block"> to <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">ship faster</span>
+                </h2>
+                <p class="text-brand-muted text-base sm:text-lg max-w-xl mx-auto">
+                    Powerful tools and integrations designed to accelerate your workflow from idea to production.
+                </p>
+            </div>
+
+            <!-- Feature Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                <!-- Feature 1 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-brand-primary/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="zap" class="w-5 h-5 text-brand-primary" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">Lightning Fast</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">Optimized build pipelines and edge-ready deployment ensure your app loads in milliseconds, globally.</p>
+                </article>
+
+                <!-- Feature 2 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-brand-accent/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-brand-accent" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">Enterprise Security</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">SOC 2 compliant, end-to-end encryption, and granular access controls to keep your data safe.</p>
+                </article>
+
+                <!-- Feature 3 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-green-500/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="smartphone" class="w-5 h-5 text-green-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">Fully Responsive</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">Pixel-perfect experiences across every device, screen size, and orientation — out of the box.</p>
+                </article>
+
+                <!-- Feature 4 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="cloud" class="w-5 h-5 text-orange-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">Cloud Native</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">Built on modern cloud infrastructure with auto-scaling, zero-downtime deploys, and global CDN.</p>
+                </article>
+
+                <!-- Feature 5 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-pink-500/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="code-2" class="w-5 h-5 text-pink-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">Developer First</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">Clean APIs, comprehensive docs, and CLI tools that integrate seamlessly with your existing stack.</p>
+                </article>
+
+                <!-- Feature 6 -->
+                <article class="feature-card bg-brand-surface border border-white/5 rounded-2xl p-6 sm:p-7 group cursor-default" tabindex="0">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/15 flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+                        <i data-lucide="heart" class="w-5 h-5 text-cyan-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-white mb-2.5">24/7 Support</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">Dedicated support team and thriving community ready to help you at any hour, any day.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== STATS SECTION ==================== -->
+    <section id="stats" aria-labelledby="stats-heading" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-brand-surface/40 border-y border-white/5">
+        <div class="max-w-5xl mx-auto">
+            <h2 id="stats-heading" class="sr-only">Platform Statistics</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-1" data-count="250">250K+</div>
+                    <p class="text-brand-muted text-sm">Developers</p>
+                </div>
+                <div>
+                    <div class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-1" data-count="99">99.9%</div>
+                    <p class="text-brand-muted text-sm">Uptime SLA</p>
+                </div>
+                <div>
+                    <div class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-1" data-count="50">50M+</div>
+                    <p class="text-brand-muted text-sm">Deployments</p>
+                </div>
+                <div>
+                    <div class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-1" data-count="150">150+</div>
+                    <p class="text-brand-muted text-sm">Countries</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA SECTION ==================== -->
+    <section id="cta" aria-labelledby="cta-heading" class="py-20 sm:py-28 lg:py-32 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="cta-glow bg-brand-surface border border-white/10 rounded-3xl p-8 sm:p-12 lg:p-14 text-center relative overflow-hidden">
+                <!-- Inner gradient -->
+                <div class="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-accent/5 pointer-events-none" aria-hidden="true"></div>
+
+                <h2 id="cta-heading" class="relative font-display font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-4">
+                    Ready to <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">accelerate</span> your workflow?
+                </h2>
+                <p class="relative text-brand-muted text-base sm:text-lg mb-8 max-w-lg mx-auto">
+                    Join thousands of developers who are already building faster. Start your free trial today — no credit card required.
+                </p>
+
+                <!-- Newsletter / Signup Form -->
+                <form id="signup-form" class="relative flex flex-col sm:flex-row gap-3 max-w-md mx-auto" novalidate aria-label="Email signup form">
+                    <div class="flex-1 relative">
+                        <label for="email-input" class="sr-only">Email address</label>
+                        <input
+                        type="email"
+                        id="email-input"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                        aria-required="true"
+                        aria-describedby="email-error email-success"
+                        class="w-full px-4 py-3 bg-brand-bg border border-white/10 rounded-xl text-white text-sm placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all duration-200"
+                        >
+                    </div>
+                    <button
+                    type="submit"
+                    id="signup-submit-btn"
+                    class="btn-shimmer inline-flex items-center justify-center gap-2 bg-brand-primary text-white font-semibold text-sm px-6 py-3 rounded-xl hover:shadow-lg hover:shadow-brand-primary/25 transition-all duration-300 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-surface"
+                    >
+                    <span id="submit-text">Start Free Trial</span>
+                    <span id="submit-spinner" class="hidden"><i data-lucide="loader-circle" class="w-4 h-4 animate-spin" aria-hidden="true"></i></span>
+                    <i data-lucide="arrow-right" class="w-4 h-4" id="submit-arrow" aria-hidden="true"></i>
+                </button>
+                <!-- Error & Success Messages -->
+                <p id="email-error" class="hidden text-red-400 text-xs mt-

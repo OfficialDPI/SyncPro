@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Coffee Cove — Handcrafted coffee experiences in a cozy, welcoming space. Discover our artisan brews, fresh pastries, and the perfect atmosphere for your daily ritual.">
+    <meta name="theme-color" content="#1E1814">
+
+    <meta property="og:title" content="Coffee Cove — Handcrafted Coffee & Cozy Vibes">
+    <meta property="og:description" content="Discover artisan coffee, fresh pastries, and the perfect atmosphere for your daily ritual. Visit Coffee Cove today.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://coffeecove.com/og-image.jpg">
+    <meta property="og:image:alt" content="Coffee Cove shop front with warm lighting">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Coffee Cove — Handcrafted Coffee & Cozy Vibes">
+    <meta name="twitter:description" content="Discover artisan coffee, fresh pastries, and the perfect atmosphere for your daily ritual.">
+
+    <title>Coffee Cove — Handcrafted Coffee & Cozy Vibes</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6F4E37',
+                        'primary-light': '#8B6346',
+                        'primary-dark': '#4A3325',
+                        accent: '#D4A76A',
+                        'accent-light': '#E0BF8A',
+                        'accent-dark': '#B8894A',
+                        dark: '#1E1814',
+                        'dark-light': '#2A231E',
+                        'dark-lighter': '#352D27',
+                        'dark-card': '#251F1A',
+                        cream: '#F5EDE4',
+                        'cream-muted': '#C4B8AD',
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-in-right': 'slideInRight 0.4s ease-out forwards',
+                        'slide-out-right': 'slideOutRight 0.3s ease-in forwards',
+                        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-14px)' },
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.65' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(32px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        slideOutRight: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+
+    <style>
+        :root {
+            --primary: #6F4E37;
+            --accent: #D4A76A;
+            --dark: #1E1814;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E1814;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6F4E37;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8B6346;
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            z-index: 9999;
+            padding: 12px 24px;
+            background: #D4A76A;
+            color: #1E1814;
+            font-weight: 700;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: top 0.2s ease;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 16px;
+            outline: 3px solid #D4A76A;
+            outline-offset: 3px;
+        }
+
+        /* Focus ring */
+        *:focus-visible {
+            outline: 2.5px solid #D4A76A !important;
+            outline-offset: 2px !important;
+            border-radius: 4px;
+        }
+
+        /* Reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+
+        /* Mobile menu */
+        .mobile-backdrop {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Hero gradient */
+        .hero-bg {
+            background:
+                radial-gradient(ellipse 70% 50% at 50% 35%, rgba(212, 167, 106, 0.10) 0%, transparent 65%),
+                radial-gradient(ellipse 60% 40% at 25% 75%, rgba(111, 78, 55, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 35% at 75% 70%, rgba(111, 78, 55, 0.12) 0%, transparent 50%),
+                #1E1814;
+        }
+
+        /* Card hover */
+        .card-hover {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(212, 167, 106, 0.25);
+        }
+
+        /* Testimonial carousel */
+        .testimonial-slide {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateX(30px);
+            position: absolute;
+            inset: 0;
+        }
+        .testimonial-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+            position: relative;
+        }
+
+        .carousel-dot {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .carousel-dot.active {
+            background-color: #D4A76A;
+            width: 32px;
+            border-radius: 999px;
+        }
+
+        /* Input autofill */
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 30px #2A231E inset !important;
+            -webkit-text-fill-color: #F5EDE4 !important;
+        }
+        input::placeholder {
+            color: #9A8E84;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 24px;
+            z-index: 9999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-dark text-cream font-inter antialiased min-h-screen">
+
+    <!-- Skip to content -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+
+    <!-- Header -->
+    <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-dark/85 backdrop-blur-lg border-b border-transparent" role="banner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2.5 group" aria-label="Coffee Cove Home">
+                    <i data-lucide="coffee" class="w-7 h-7 text-accent group-hover:text-accent-light transition-colors duration-300" aria-hidden="true"></i>
+                    <span class="font-outfit font-bold text-xl text-cream tracking-tight">Coffee<span class="text-accent">Cove</span></span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+                    <a href="#features" class="text-cream-muted hover:text-accent transition-colors duration-200 text-sm font-medium tracking-wide">Features</a>
+                    <a href="#menu" class="text-cream-muted hover:text-accent transition-colors duration-200 text-sm font-medium tracking-wide">Menu</a>
+                    <a href="#about" class="text-cream-muted hover:text-accent transition-colors duration-200 text-sm font-medium tracking-wide">About</a>
+                    <a href="#testimonials" class="text-cream-muted hover:text-accent transition-colors duration-200 text-sm font-medium tracking-wide">Reviews</a>
+                    <a href="#contact" class="text-cream-muted hover:text-accent transition-colors duration-200 text-sm font-medium tracking-wide">Contact</a>
+                </nav>
+
+                <!-- Desktop CTA -->
+                <a href="#contact" class="hidden md:inline-flex items-center gap-2 bg-accent text-dark font-semibold px-5 py-2.5 rounded-full text-sm hover:bg-accent-light transition-all duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/35 hover:-translate-y-0.5">
+                    Order Now
+                    <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-dark-lighter transition-colors duration-200" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+                    <i data-lucide="menu" class="w-6 h-6 text-cream" id="menu-icon-open" aria-hidden="true"></i>
+                    <i data-lucide="x" class="w-6 h-6 text-cream hidden" id="menu-icon-close" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-dark-light border-l border-dark-lighter shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-40 md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+            <div class="flex flex-col h-full pt-20 px-6 pb-8">
+                <nav class="flex flex-col gap-3" aria-label="Mobile navigation">
+                    <a href="#features" class="mobile-nav-link text-cream-muted hover:text-accent transition-colors duration-200 text-lg font-medium py-2.5 border-b border-dark-lighter/40">Features</a>
+                    <a href="#menu" class="mobile-nav-link text-cream-muted hover:text-accent transition-colors duration-200 text-lg font-medium py-2.5 border-b border-dark-lighter/40">Menu</a>
+                    <a href="#about" class="mobile-nav-link text-cream-muted hover:text-accent transition-colors duration-200 text-lg font-medium py-2.5 border-b border-dark-lighter/40">About</a>
+                    <a href="#testimonials" class="mobile-nav-link text-cream-muted hover:text-accent transition-colors duration-200 text-lg font-medium py-2.5 border-b border-dark-lighter/40">Reviews</a>
+                    <a href="#contact" class="mobile-nav-link text-cream-muted hover:text-accent transition-colors duration-200 text-lg font-medium py-2.5 border-b border-dark-lighter/40">Contact</a>
+                </nav>
+                <a href="#contact" class="mobile-nav-link mt-6 flex items-center justify-center gap-2 bg-accent text-dark font-semibold px-5 py-3 rounded-full text-sm hover:bg-accent-light transition-all duration-300">
+                    Order Now
+                    <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div id="mobile-backdrop" class="mobile-backdrop fixed inset-0 bg-black/55 z-30 md:hidden" aria-hidden="true"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Hero -->
+        <section id="hero" class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden pt-16" aria-labelledby="hero-heading">
+            <!-- Decorative elements -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                <i data-lucide="bean" class="absolute top-24 left-[8%] w-8 h-8 text-accent/8 rotate-12 hidden lg:block"></i>
+                <i data-lucide="bean" class="absolute top-40 right-[10%] w-6 h-6 text-accent/6 -rotate-20 hidden lg:block"></i>
+                <i data-lucide="bean" class="absolute bottom-36 left-[12%] w-7 h-7 text-accent/5 rotate-45 hidden lg:block"></i>
+                <i data-lucide="bean" class="absolute bottom-28 right-[14%] w-5 h-5 text-accent/8 -rotate-12 hidden lg:block"></i>
+                <i data-lucide="bean" class="absolute top-1/2 left-[4%] w-4 h-4 text-accent/6 rotate-6 hidden lg:block"></i>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 rounded-full px-4 py-1.5 mb-8 animate-fade-in opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+                    <span class="w-2 h-2 bg-accent rounded-full animate-pulse-soft" aria-hidden="true"></span>
+                    <span class="text-accent text-sm font-medium tracking-wide">Now Open in Downtown</span>
+                </div>
+
+                <h1 id="hero-heading" class="font-outfit font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-cream leading-tight mb-6 max-w-4xl mx-auto animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+                    Where Every Sip Feels Like
+                    <span class="text-accent block mt-2">Coming Home</span>
+                </h1>
+
+                <p class="text-cream-muted text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.35s; animation-fill-mode: forwards;">
+                    Handcrafted coffee, warm pastries, and a cozy atmosphere designed for your daily ritual. Slow down, savor the moment, and make yourself at home.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0" style="animation-delay: 0.5s; animation-fill-mode: forwards;">
+                    <a href="#menu" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent text-dark font-semibold px-8 py-3.5 rounded-full text-base hover:bg-accent-light transition-all duration-300 shadow-xl shadow-accent/20 hover:shadow-accent/35 hover:-translate-y-0.5">
+                        Explore Our Menu
+                        <i data-lucide="chevron-down" class="w-5 h-5" aria-hidden="true"></i>
+                    </a>
+                    <a href="#about" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 border-2 border-cream-muted/25 text-cream font-semibold px-8 py-3.5 rounded-full text-base hover:border-accent hover:text-accent transition-all duration-300 hover:-translate-y-0.5">
+                        Our Story
+                        <i data-lucide="book-open" class="w-5 h-5" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div class="mt-16 animate-fade-in opacity-0" style="animation-delay: 0.8s; animation-fill-mode: forwards;" aria-hidden="true">
+                    <div class="w-6 h-10 border-2 border-cream-muted/35 rounded-full mx-auto flex items-start justify-center p-1.5">
+                        <div class="w-1.5 h-3 bg-accent rounded-full animate-bounce-gentle"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="py-20 sm:py-28 relative" aria-labelledby="features-heading">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 reveal">
+                    <h2 id="features-heading" class="font-outfit font-bold text-3xl sm:text-4xl md:text-5xl text-cream mb-4">What Makes Us Special</h2>
+                    <p class="text-cream-muted text-lg max-w-xl mx-auto">Every detail crafted with care to give you the best coffee experience in town.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                    <!-- Feature 1 -->
+                    <article class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl p-6 sm:p-8 group" style="transition-delay: 0.05s;">
+                        <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="bean" class="w-7 h-7 text-accent" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-outfit font-semibold text-xl text-cream mb-3">Single-Origin Beans</h3>
+                        <p class="text-cream-muted text-sm leading-relaxed">Ethically sourced from small farms across Ethiopia, Colombia, and Guatemala for unmatched flavor.</p>
+                    </article>
+
+                    <!-- Feature 2 -->
+                    <article class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl p-6 sm:p-8 group" style="transition-delay: 0.15s;">
+                        <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="flame" class="w-7 h-7 text-accent" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-outfit font-semibold text-xl text-cream mb-3">Roasted In-House</h3>
+                        <p class="text-cream-muted text-sm leading-relaxed">Every batch is roasted on-site daily to ensure peak freshness and the richest aroma.</p>
+                    </article>
+
+                    <!-- Feature 3 -->
+                    <article class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl p-6 sm:p-8 group" style="transition-delay: 0.25s;">
+                        <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="croissant" class="w-7 h-7 text-accent" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-outfit font-semibold text-xl text-cream mb-3">Fresh Pastries Daily</h3>
+                        <p class="text-cream-muted text-sm leading-relaxed">Buttery croissants, muffins, and scones baked fresh every morning by our pastry chefs.</p>
+                    </article>
+
+                    <!-- Feature 4 -->
+                    <article class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl p-6 sm:p-8 group" style="transition-delay: 0.35s;">
+                        <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
+                            <i data-lucide="wifi" class="w-7 h-7 text-accent" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-outfit font-semibold text-xl text-cream mb-3">Cozy Workspace</h3>
+                        <p class="text-cream-muted text-sm leading-relaxed">Free high-speed Wi-Fi, ample outlets, and quiet nooks perfect for work or study.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <section id="menu" class="py-20 sm:py-28 bg-dark-light/50 relative" aria-labelledby="menu-heading">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 reveal">
+                    <h2 id="menu-heading" class="font-outfit font-bold text-3xl sm:text-4xl md:text-5xl text-cream mb-4">Our Signature Menu</h2>
+                    <p class="text-cream-muted text-lg max-w-xl mx-auto">Crafted with passion, served with warmth. Here are our favorites.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Item 1 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.05s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="coffee" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                            <span class="absolute top-3 right-3 bg-accent text-dark text-xs font-bold px-3 py-1 rounded-full">Popular</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Cove Latte</h3>
+                                <span class="text-accent font-bold text-lg">$5.50</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Espresso with steamed milk and our signature vanilla-honey syrup.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.15s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="coffee" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Cold Brew</h3>
+                                <span class="text-accent font-bold text-lg">$4.75</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Smooth, slow-steeped for 18 hours. Served over ice with a hint of chicory.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.25s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="coffee" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                            <span class="absolute top-3 right-3 bg-primary text-cream text-xs font-bold px-3 py-1 rounded-full">New</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Caramel Macchiato</h3>
+                                <span class="text-accent font-bold text-lg">$6.00</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Layered vanilla, espresso, and house-made caramel drizzle.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.05s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="croissant" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Butter Croissant</h3>
+                                <span class="text-accent font-bold text-lg">$3.95</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Flaky, golden, and baked fresh every morning. Perfect with any coffee.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.15s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="coffee" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Mocha</h3>
+                                <span class="text-accent font-bold text-lg">$5.95</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Rich chocolate meets bold espresso, topped with whipped cream.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="reveal card-hover bg-dark-card border border-dark-lighter rounded-2xl overflow-hidden group" style="transition-delay: 0.25s;">
+                        <div class="h-48 bg-gradient-to-br from-primary/40 to-dark flex items-center justify-center relative overflow-hidden">
+                            <i data-lucide="coffee" class="w-20 h-20 text-accent/40 group-hover:text-accent/60 transition-colors duration-300" aria-hidden="true"></i>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-outfit font-semibold text-lg text-cream">Matcha Latte</h3>
+                                <span class="text-accent font-bold text-lg">$5.75</span>
+                            </div>
+                            <p class="text-cream-muted text-sm">Ceremonial-grade matcha whisked with steamed oat or dairy milk.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section id="about" class="py-20 sm:py-28 relative" aria-labelledby="about-heading">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Image placeholder -->
+                    <div class="reveal relative">
+                        <div class="aspect-[4/3] bg-gradient-to-br from-primary/50 via-dark-card to-dark rounded-3xl flex items-center justify-center border border-dark-lighter overflow-hidden shadow-2xl">
+                            <div class="text-center p-8">
+                                <i data-lucide="store" class="w-24 h-24 text-accent/35 mx-auto mb-4" aria-hidden="true"></i>
+                                <span class="text-cream-muted text-sm font-medium">Our Downtown Location</span>
+                            </div>
+                        </div>
+                        <!-- Floating badge -->
+                        <div class="absolute -bottom-6 -right-4 bg-accent text-dark font-bold px-6 py-3 rounded-2xl shadow-xl animate-float hidden sm:block">
+                            <span class="text-sm">Est. 2018</span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="reveal" style="transition-delay: 0.1s;">
+                        <h2 id="about-heading" class="font-outfit font-bold text-3xl sm:text-4xl md:text-5xl text-cream mb-6">Our Story</h2>
+                        <p class="text-cream-muted text-base sm:text-lg leading-relaxed mb-5">
+                            Coffee Cove was born from a simple belief: great coffee brings people together. Founded in 2018 by two childhood friends, our downtown shop has become a beloved gathering place for the community.
+                        </p>
+                        <p class="text-cream-muted text-base sm:text-lg leading-relaxed mb-8">
+                            We source our beans directly from farmers, roast them in-house, and craft every drink with intention. From our cozy seating to our friendly baristas, every detail is designed to make you feel at home.
+                        </p>
+                        <div class="flex flex-wrap gap-6 mb-8">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-accent" aria-hidden="true"></i>
+                                <span class="text-cream text-sm font-medium">Ethically Sourced</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-accent" aria-hidden="true"></i>
+                                <span class="text-cream text-sm font-medium">Roasted In-House</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-accent" aria-hidden="true"></i>
+                                <span class="text-cream text-sm font-medium">Community Focused</span>
+                            </div>
+                        </div>
+                        <a href="#contact" class="inline-flex items-center gap-2 bg-accent text-dark font-semibold px-6 py-3 rounded-full text-sm hover:bg-accent-light transition-all duration-300 shadow-lg shadow-accent/20">
+                            Visit Us Today
+</div>
+</section>
+</main>
+</body>
+</html>

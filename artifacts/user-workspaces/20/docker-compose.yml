@@ -1,0 +1,65 @@
+# docker-compose.yml for BrewBloomCoffeeBrokenTest – intentionally broken React frontend
+# The frontend service will fail to build due to invalid React code, simulating a broken state
+# All services are configured with health checks to detect failures early.
+
+services:
+  frontend:
+    build:
+      context: ./frontend # contains a Dockerfile that attempts to compile broken React code
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_THEME=dark
+      - REACT_APP_PRIMARY_COLOR=#6F4E37
+      - REACT_APP_ACCENT_COLOR=#F5E6D3
+      - REACT_APP_BACKGROUND_COLOR=#2C1A14
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 2  # low retries to fail fast
+    restart: "no"   # do not restart automatically; showcase build failure
+
+  backend:
+    image: node:18-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://brewbloom_testuser:testpass@db:5432/brewbloom_testdb
+      - NODE_ENV=development
+      - THEME=dark
+      - PRIMARY_COLOR=#6F4E37
+      - ACCENT_COLOR=#F5E6D3
+      - BACKGROUND_COLOR=#2C1A14
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=brewbloom_testuser
+      - POSTGRES_PASSWORD=testpass
+      - POSTGRES_DB=brewbloom_testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brewbloom_testuser -d brewbloom_testdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata_test:

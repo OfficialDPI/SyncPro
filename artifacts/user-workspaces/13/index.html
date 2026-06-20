@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Build Faster. Scale Smarter.</title>
+    <meta name="description" content="Nexus is the all-in-one platform that helps teams ship products faster, collaborate seamlessly, and scale with confidence. Start your free trial today.">
+    <meta name="theme-color" content="#0d0d12">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nexus — Build Faster. Scale Smarter.">
+    <meta property="og:description" content="The all-in-one platform for modern teams. Ship products faster, collaborate seamlessly, and scale with confidence.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&h=630&fit=crop">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nexus — Build Faster. Scale Smarter.">
+    <meta name="twitter:description" content="The all-in-one platform for modern teams. Ship products faster, collaborate seamlessly, and scale with confidence.">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#0d0d12',
+                        surface: '#13131a',
+                        'surface-elevated': '#18181f',
+                        border: '#1e1e2a',
+                        'border-hover': '#2a2a3a',
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg: #0d0d12;
+            --primary: #7c3aed;
+            --primary-glow: rgba(124, 58, 237, 0.35);
+            --accent: #a78bfa;
+            --text-primary: #f1f1f6;
+            --text-secondary: #a1a1aa;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0d12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a3a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a4a;
+        }
+
+        /* Focus ring */
+        *:focus-visible {
+            outline: 2px solid #a78bfa;
+            outline-offset: 3px;
+            border-radius: 6px;
+        }
+
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 16px;
+            z-index: 9999;
+            background: #7c3aed;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: top 0.2s ease;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 {
+            transition-delay: 0.05s;
+        }
+        .reveal-delay-2 {
+            transition-delay: 0.12s;
+        }
+        .reveal-delay-3 {
+            transition-delay: 0.19s;
+        }
+        .reveal-delay-4 {
+            transition-delay: 0.26s;
+        }
+        .reveal-delay-5 {
+            transition-delay: 0.33s;
+        }
+        .reveal-delay-6 {
+            transition-delay: 0.40s;
+        }
+
+        /* Glow blobs */
+        .glow-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-blob--hero {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%);
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: floatBlob 8s ease-in-out infinite;
+        }
+        .glow-blob--cta {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+            animation: floatBlob 10s ease-in-out infinite reverse;
+        }
+        @keyframes floatBlob {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+            33% {
+                transform: translateX(-45%) translateY(-30px) scale(1.08);
+            }
+            66% {
+                transform: translateX(-55%) translateY(20px) scale(0.94);
+            }
+        }
+
+        /* Card hover glow */
+        .card-glow {
+            position: relative;
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+        }
+        .card-glow:hover {
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 40px -8px rgba(124, 58, 237, 0.2), 0 8px 32px -8px rgba(0, 0, 0, 0.5);
+            transform: translateY(-4px);
+        }
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent 30%, rgba(124, 58, 237, 0.3) 50%, transparent 70%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+        .card-glow:hover::before {
+            opacity: 1;
+        }
+
+        /* Button pulse */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .btn-primary:hover::after {
+            opacity: 0.7;
+        }
+
+        /* Mobile menu backdrop */
+        .mobile-backdrop {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* Success check animation */
+        @keyframes checkPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .check-animate {
+            animation: checkPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Gradient text utility */
+        .text-gradient {
+            background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 30%, #7c3aed 60%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Subtle grid pattern for hero background */
+        .hero-bg-pattern {
+            background-image:
+                radial-gradient(circle at 25% 20%, rgba(124, 58, 237, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 75% 60%, rgba(167, 139, 250, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 50% 40%, rgba(124, 58, 237, 0.03) 0%, transparent 70%);
+        }
+
+        @media (max-width: 640px) {
+            .glow-blob--hero {
+                width: 300px;
+                height: 300px;
+                top: -80px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg text-[#f1f1f6] font-sans antialiased min-h-screen">
+
+    <!-- Skip to content -->
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
+
+    <!-- ============ HEADER ============ -->
+    <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-400 border-b border-transparent" role="banner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-18">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2.5 group" aria-label="Nexus Home">
+                    <div class="w-9 h-9 rounded-lg bg-purple-600 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                        <i data-lucide="hexagon" class="w-5 h-5 text-white" aria-hidden="true"></i>
+                    </div>
+                    <span class="text-lg font-bold font-display tracking-tight text-white">Nexus</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-1" aria-label="Main navigation">
+                    <a href="#features" class="px-3.5 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors duration-200 nav-link">Features</a>
+                    <a href="#stats" class="px-3.5 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors duration-200 nav-link">Why Nexus</a>
+                    <a href="#cta-section" class="px-3.5 py-2 text-sm font-medium text-gray-400 hover:text-white rounded-lg transition-colors duration-200 nav-link">Get Started</a>
+                </nav>
+
+                <!-- Desktop CTA -->
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="#cta-section" class="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200">Sign In</a>
+                    <a href="#cta-section" class="btn-primary inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl transition-all duration-300 shadow-lg shadow-purple-600/25 hover:shadow-purple-500/40">
+                        Start Free Trial
+                        <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Hamburger -->
+                <button id="mobile-menu-btn"
+                class="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors duration-200"
+                aria-expanded="false"
+                aria-controls="mobile-menu-panel"
+                aria-label="Open navigation menu">
+                <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5 transition-opacity duration-200" aria-hidden="true"></i>
+                <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 absolute opacity-0 transition-opacity duration-200" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu-panel"
+    class="fixed inset-0 z-40 md:hidden pointer-events-none"
+    aria-hidden="true">
+    <!-- Backdrop -->
+    <div id="mobile-backdrop"
+    class="absolute inset-0 bg-black/70 mobile-backdrop opacity-0 transition-opacity duration-350"
+    aria-hidden="true"></div>
+    <!-- Panel -->
+    <div id="mobile-panel-content"
+    class="absolute top-0 right-0 w-[280px] sm:w-[320px] h-full bg-surface-elevated border-l border-border shadow-2xl transform translate-x-full transition-transform duration-350 flex flex-col">
+    <div class="flex items-center justify-between px-5 h-16 border-b border-border">
+        <span class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Menu</span>
+        <button id="mobile-close-btn-inner"
+        class="w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors duration-200"
+        aria-label="Close navigation menu">
+        <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+    </button>
+</div>
+<nav class="flex-1 px-4 py-6 flex flex-col gap-1" aria-label="Mobile navigation">
+    <a href="#features" class="mobile-nav-link flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">Features</a>
+    <a href="#stats" class="mobile-nav-link flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">Why Nexus</a>
+    <a href="#cta-section" class="mobile-nav-link flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">Get Started</a>
+    <hr class="my-3 border-border" aria-hidden="true">
+    <a href="#cta-section" class="mobile-nav-link flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">Sign In</a>
+</nav>
+<div class="p-4 border-t border-border">
+    <a href="#cta-section" class="btn-primary flex items-center justify-center gap-2 w-full px-5 py-3 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl transition-all duration-300 shadow-lg shadow-purple-600/25">
+        Start Free Trial
+        <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+    </a>
+</div>
+</div>
+</div>
+</header>
+
+<!-- ============ MAIN CONTENT ============ -->
+<main id="main-content" role="main">
+
+    <!-- ============ HERO SECTION ============ -->
+    <section class="relative min-h-[92vh] flex items-center justify-center overflow-hidden pt-16 hero-bg-pattern" aria-labelledby="hero-heading">
+        <div class="glow-blob glow-blob--hero" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20">
+            <!-- Badge -->
+            <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-600/30 bg-purple-600/8 text-purple-400 text-xs sm:text-sm font-medium mb-8">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-60"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-400"></span>
+                </span>
+                Now in public beta — free for early adopters
+            </div>
+
+            <!-- Heading -->
+            <h1 id="hero-heading" class="reveal reveal-delay-1 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold leading-[1.08] tracking-tight text-white mb-6">
+                Build products
+                <br class="hidden sm:block">
+                <span class="text-gradient">people love</span> at
+                <br class="hidden sm:block">
+                lightning speed
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="reveal reveal-delay-2 max-w-xl mx-auto text-base sm:text-lg text-gray-400 leading-relaxed mb-10">
+                Nexus gives your team the tools, workflows, and insights to ship faster, collaborate better, and scale effortlessly — all in one beautifully designed platform.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="reveal reveal-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+                <a href="#cta-section" class="btn-primary group inline-flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-xl transition-all duration-300 shadow-xl shadow-purple-600/30 hover:shadow-purple-500/45 hover:scale-[1.03]">
+                    Get started free
+                    <i data-lucide="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true"></i>
+                </a>
+                <a href="#features" class="inline-flex items-center gap-2 px-7 py-3.5 text-base font-semibold text-gray-300 hover:text-white border border-border hover:border-border-hover rounded-xl transition-all duration-300 hover:bg-white/[0.03]">
+                    <i data-lucide="play-circle" class="w-5 h-5" aria-hidden="true"></i>
+                    Watch demo
+                </a>
+            </div>
+
+            <!-- Trusted by -->
+            <p class="reveal reveal-delay-4 mt-14 text-xs sm:text-sm text-gray-500 font-medium uppercase tracking-widest">Trusted by innovative teams worldwide</p>
+            <div class="reveal reveal-delay-5 mt-5 flex flex-wrap items-center justify-center gap-8 sm:gap-10 opacity-50">
+                <span class="text-gray-500 font-semibold text-lg font-display">Acme Corp</span>
+                <span class="text-gray-500 font-semibold text-lg font-display">Stellar</span>
+                <span class="text-gray-500 font-semibold text-lg font-display">Flux</span>
+                <span class="text-gray-500 font-semibold text-lg font-display">Horizon</span>
+                <span class="text-gray-500 font-semibold text-lg font-display">Vertex</span>
+            </div>
+        </div>
+
+        <!-- Bottom fade -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg to-transparent pointer-events-none" aria-hidden="true"></div>
+    </section>
+
+    <!-- ============ FEATURES SECTION ============ -->
+    <section id="features" class="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8" aria-labelledby="features-heading">
+        <div class="max-w-6xl mx-auto">
+            <!-- Section header -->
+            <div class="text-center mb-16">
+                <span class="reveal inline-block text-purple-400 text-sm font-semibold uppercase tracking-wider mb-3">Why Nexus</span>
+                <h2 id="features-heading" class="reveal reveal-delay-1 text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">
+                    Everything you need
+                    <br class="hidden sm:block">
+                    <span class="text-gradient">in one platform</span>
+                </h2>
+                <p class="reveal reveal-delay-2 max-w-lg mx-auto text-gray-400 text-base sm:text-lg">
+                    From ideation to deployment, Nexus streamlines every step of your workflow.
+                </p>
+            </div>
+
+            <!-- Feature cards grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Card 1 -->
+                <article class="reveal reveal-delay-1 card-glow bg-surface border border-border rounded-2xl p-6 sm:p-7 cursor-default">
+                    <div class="w-11 h-11 rounded-xl bg-purple-600/15 flex items-center justify-center mb-5">
+                        <i data-lucide="zap" class="w-5 h-5 text-purple-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2.5">Lightning Fast</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Optimized build pipelines and edge deployments ensure your apps load in milliseconds, everywhere.</p>
+                </article>
+
+                <!-- Card 2 -->
+                <article class="reveal reveal-delay-2 card-glow bg-surface border border-border rounded-2xl p-6 sm:p-7 cursor-default">
+                    <div class="w-11 h-11 rounded-xl bg-purple-600/15 flex items-center justify-center mb-5">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-purple-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2.5">Enterprise Security</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">SOC 2 compliant, end-to-end encrypted, with granular permissions and audit logging built in.</p>
+                </article>
+
+                <!-- Card 3 -->
+                <article class="reveal reveal-delay-3 card-glow bg-surface border border-border rounded-2xl p-6 sm:p-7 cursor-default">
+                    <div class="w-11 h-11 rounded-xl bg-purple-600/15 flex items-center justify-center mb-5">
+                        <i data-lucide="layers" class="w-5 h-5 text-purple-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2.5">Modular Architecture</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Compose your stack with reusable modules. Swap, upgrade, and scale components independently.</p>
+                </article>
+
+                <!-- Card 4 -->
+                <article class="reveal reveal-delay-
+</div>
+</section>
+</main>
+</body>
+</html>

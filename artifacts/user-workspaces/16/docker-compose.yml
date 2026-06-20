@@ -1,0 +1,69 @@
+import React, { useState } from 'react';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => setCount(prev => prev + 1);
+  const decrement = () => setCount(prev => prev - 1);
+  const reset = () => setCount(0);
+
+  return (
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Simple Counter</h1>
+      <div style={styles.counterDisplay}>
+        <span style={styles.count}>{count}</span>
+      </div>
+      <div style={styles.buttonGroup}>
+        <button style={styles.button} onClick={decrement} disabled={count <= -10}>-</button>
+        <button style={styles.button} onClick={reset}>Reset</button>
+        <button style={styles.button} onClick={increment} disabled={count >= 10}>+</button>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    backgroundColor: '#f0f4f8',
+    fontFamily: 'Arial, sans-serif',
+  },
+  heading: {
+    fontSize: '2.5rem',
+    color: '#333',
+    marginBottom: '20px',
+  },
+  counterDisplay: {
+    backgroundColor: '#ffffff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    padding: '30px 60px',
+    marginBottom: '30px',
+  },
+  count: {
+    fontSize: '5rem',
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '15px',
+  },
+  button: {
+    padding: '12px 24px',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    backgroundColor: '#3498db',
+    color: 'white',
+    transition: 'background-color 0.2s',
+  },
+};
+
+export default App;

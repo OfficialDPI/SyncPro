@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx:alpine
+    container_name: landing-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - landing-network
+
+  backend:
+    image: node:18-alpine
+    container_name: landing-backend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=landing_user
+      - DB_PASSWORD=landing_pass
+      - DB_NAME=landing_db
+    volumes:
+      - ./backend:/app
+    command: ["node", "server.js"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - landing-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: landing-postgres
+    environment:
+      POSTGRES_USER: landing_user
+      POSTGRES_PASSWORD: landing_pass
+      POSTGRES_DB: landing_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U landing_user -d landing_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - landing-network
+
+volumes:
+  postgres_data:
+
+networks:
+  landing-network:
+    driver: bridge
