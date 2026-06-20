@@ -491,11 +491,47 @@ function validateSQL(sql: string): ValidationResult {
 function validateYAML(yamlStr: string): ValidationResult {
   const errors: string[] = [];
   try {
-    parseYaml(yamlStr);
+    const clean = yamlStr.trim();
+    if (clean.startsWith("<!DOCTYPE") || clean.startsWith("<html")) {
+      errors.push("YAML file cannot start with HTML tags or doctype definitions.");
+    } else {
+      const parsed = parseYaml(yamlStr);
+      if (parsed === null) {
+        errors.push("YAML parsed to null.");
+      } else if (typeof parsed !== "object" || Array.isArray(parsed)) {
+        errors.push(`YAML must parse to a key-value mapping (object), but got: ${typeof parsed}`);
+      }
+    }
   } catch (err: any) {
     errors.push(`YAML parse error: ${err.message || err}`);
   }
   return { valid: errors.length === 0, errors };
+}
+
+function detectFileToFixFromError(errorMsg: string, defaultFile: string): string {
+  const fileRegex = /(?:[a-zA-Z]:[\\\/]|\b)[\w\-\.\/\\@]+\.(tsx|jsx|ts|js|vue|html|css|sql|yml|yaml)\b/i;
+  const match = errorMsg.match(fileRegex);
+  if (match) {
+    const filePath = match[0];
+    const normalized = filePath.replace(/\\/g, "/");
+    const wsMatch = normalized.match(/user-workspaces\/[^/]+\/(.+)$/);
+    if (wsMatch) {
+      return wsMatch[1];
+    }
+    const baseName = normalized.split("/").pop();
+    if (baseName) {
+      const knownNames = ["docker-compose.yml", "schema.sql", "index.html", "package.json", "vite.config.ts", "tsconfig.json", "styles.css"];
+      if (knownNames.includes(baseName)) {
+        return baseName;
+      }
+      const srcIndex = normalized.split("/").indexOf("src");
+      if (srcIndex !== -1) {
+        return normalized.split("/").slice(srcIndex).join("/");
+      }
+      return baseName;
+    }
+  }
+  return defaultFile;
 }
 
 async function selfHealFile(
@@ -1664,6 +1700,19 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
               else if (detectedStack === "NextJS") fileToFix = "src/app/page.tsx";
               else if (detectedStack === "HTML" || detectedStack === "HTML+CSS") fileToFix = "index.html";
 
+              // Detect file from build error messages
+              fileToFix = detectFileToFixFromError(lastBuildError, fileToFix);
+
+              let targetAgent = "code";
+              let targetPrompt = codePrompt;
+              if (fileToFix === "docker-compose.yml" || fileToFix.endsWith(".yml") || fileToFix.endsWith(".yaml")) {
+                targetAgent = "deploy";
+                targetPrompt = deployPrompt;
+              } else if (fileToFix === "schema.sql" || fileToFix.endsWith(".sql")) {
+                targetAgent = "db";
+                targetPrompt = dbPrompt;
+              }
+
               const fileToFixPath = path.resolve(tempProjectPath, fileToFix);
               let currentContent = "";
               try {
@@ -1674,15 +1723,15 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
                 fileToFix,
                 currentContent,
                 lastBuildError,
-                "code",
-                codePrompt,
+                targetAgent,
+                targetPrompt,
                 chatMessages,
                 activeModel,
                 groq
               );
 
               let finalFixedCode = fixedCode;
-              if (detectedStack === "HTML") {
+              if (fileToFix.endsWith(".html")) {
                 const val = validateHTML(finalFixedCode);
                 if (val.openTags && val.openTags.length > 0) {
                   let closedCode = finalFixedCode.trim();
@@ -1711,7 +1760,7 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
 
                 if (fixValid) {
                   await fs.rename(fixTmpPath, fileToFixPath);
-                  responses.code = responses.code.replace(currentContent, finalFixedCode);
+                  responses[targetAgent] = responses[targetAgent].replace(currentContent, finalFixedCode);
                 } else {
                   await fs.unlink(fixTmpPath).catch(() => {});
                 }
