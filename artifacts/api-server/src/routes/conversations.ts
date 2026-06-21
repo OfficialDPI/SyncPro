@@ -57,7 +57,7 @@ function safeWrite(res: any, data: string) {
 function safeEnd(res: any) {
   if (res && res.writable && !res.writableEnded && !res.destroyed) {
     try {
-      safeEnd(res);
+      res.end();
     } catch (e) {
       // ignore
     }
