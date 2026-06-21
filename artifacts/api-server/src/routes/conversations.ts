@@ -624,6 +624,9 @@ async function copyDir(src: string, dest: string) {
   await fs.mkdir(dest, { recursive: true });
   const entries = await fs.readdir(src, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name === "node_modules" || entry.name === ".git") {
+      continue;
+    }
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
@@ -639,8 +642,22 @@ async function mergeTemporaryWorkspace(conversationId: number) {
   const tempPath = path.join(WORKSPACE_ROOT, `${conversationId}-temp`);
   const permPath = path.join(WORKSPACE_ROOT, String(conversationId));
   if (fsSync.existsSync(tempPath)) {
-    await copyDir(tempPath, permPath);
-    await fs.rm(tempPath, { recursive: true, force: true });
+    try {
+      if (fsSync.existsSync(permPath)) {
+        await fs.rm(permPath, { recursive: true, force: true });
+      }
+      await fs.rename(tempPath, permPath);
+    } catch (renameErr) {
+      await copyDir(tempPath, permPath);
+      await fs.rm(tempPath, { recursive: true, force: true });
+      try {
+        await execAsync("pnpm install --ignore-workspace --dangerously-allow-all-builds", { cwd: permPath, timeout: 300000 });
+      } catch {
+        try {
+          await execAsync("npm install", { cwd: permPath, timeout: 300000 });
+        } catch {}
+      }
+    }
   }
 }
 
