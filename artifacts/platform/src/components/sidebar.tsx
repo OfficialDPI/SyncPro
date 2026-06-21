@@ -10,7 +10,7 @@ import {
   Pin, Archive, Trash2, ArchiveRestore, Zap,
 } from "lucide-react";
 import {
-  useListConversations, useListProjects, useDeleteConversation,
+  useListConversations, useListProjects, useDeleteConversation, useDeleteProject,
 } from "@workspace/api-client-react";
 import { useState } from "react";
 import {
@@ -25,17 +25,21 @@ function readStorage<T>(key: string, fallback: T): T {
 
 export default function AppSidebar() {
   const [location, setLocation] = useLocation();
-  const { data: conversations = [], refetch } = useListConversations();
-  const { data: projects = [] } = useListProjects();
+  const { data: conversations = [], refetch: refetchConvs } = useListConversations();
+  const { data: projects = [], refetch: refetchProjects } = useListProjects();
   const deleteConvMutation = useDeleteConversation();
+  const deleteProjectMutation = useDeleteProject();
   const { settings } = useSettings();
 
   const [projectsOpen, setProjectsOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [showArchivedProjects, setShowArchivedProjects] = useState(false);
 
   const [pinnedIds, setPinnedIds] = useState<number[]>(() => readStorage("sync_pinned", []));
   const [archivedIds, setArchivedIds] = useState<number[]>(() => readStorage("sync_archived", []));
+  const [pinnedProjectIds, setPinnedProjectIds] = useState<number[]>(() => readStorage("sync_projects_pinned", []));
+  const [archivedProjectIds, setArchivedProjectIds] = useState<number[]>(() => readStorage("sync_projects_archived", []));
 
   const togglePin = (id: number) => {
     const next = pinnedIds.includes(id) ? pinnedIds.filter((x) => x !== id) : [...pinnedIds, id];
@@ -55,7 +59,32 @@ export default function AppSidebar() {
       {
         onSuccess: () => {
           if (location === `/chat/${convId}`) setLocation("/");
-          refetch();
+          refetchConvs();
+        },
+      }
+    );
+  };
+
+  const toggleProjectPin = (id: number) => {
+    const next = pinnedProjectIds.includes(id) ? pinnedProjectIds.filter((x) => x !== id) : [...pinnedProjectIds, id];
+    setPinnedProjectIds(next);
+    localStorage.setItem("sync_projects_pinned", JSON.stringify(next));
+  };
+
+  const toggleProjectArchive = (id: number) => {
+    const next = archivedProjectIds.includes(id) ? archivedProjectIds.filter((x) => x !== id) : [...archivedProjectIds, id];
+    setArchivedProjectIds(next);
+    localStorage.setItem("sync_projects_archived", JSON.stringify(next));
+  };
+
+  const handleDeleteProject = (projectId: number) => {
+    deleteProjectMutation.mutate(
+      { id: projectId },
+      {
+        onSuccess: () => {
+          refetchProjects();
+          refetchConvs();
+          setLocation("/");
         },
       }
     );
@@ -82,6 +111,12 @@ export default function AppSidebar() {
   const archived = filtered.filter((c) => archivedIds.includes(c.id));
   const visibleConvs = [...pinned, ...regular];
   const archivedCount = archived.length;
+
+  const pinnedProjects = filteredProjects.filter((p) => pinnedProjectIds.includes(p.id) && !archivedProjectIds.includes(p.id));
+  const regularProjects = filteredProjects.filter((p) => !pinnedProjectIds.includes(p.id) && !archivedProjectIds.includes(p.id));
+  const archivedProjects = filteredProjects.filter((p) => archivedProjectIds.includes(p.id));
+  const visibleProjects = [...pinnedProjects, ...regularProjects];
+  const archivedProjectsCount = archivedProjects.length;
 
   const initials = settings.name.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2);
 
@@ -148,13 +183,68 @@ export default function AppSidebar() {
                       <Plus className="w-3 h-3" /> All Projects
                     </div>
                   </Link>
-                  {(searchQuery ? filteredProjects : safeProjects).slice(0, 6).map((p) => (
-                    <button key={p.id} onClick={() => navigateToProject(p.id)}
-                      className={`text-xs py-1 text-left transition-colors truncate cursor-pointer w-full ${location === `/projects/${p.id}` ? "text-primary font-medium" : "text-sidebar-foreground/50 hover:text-sidebar-foreground"}`}
-                      title={`Resume last session in "${p.name}"`}>
-                      {p.name}
+                  {visibleProjects.slice(0, 15).map((p) => {
+                    const isPinned = pinnedProjectIds.includes(p.id);
+                    const isActive = location === `/projects/${p.id}`;
+                    return (
+                      <div key={p.id} className={`group flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors mb-0.5 w-full ${isActive ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/40"}`}>
+                        {isPinned ? <Pin className="w-3.5 h-3.5 flex-shrink-0 text-primary/60" /> : <Folder className="w-3.5 h-3.5 flex-shrink-0 opacity-40 text-blue-400" />}
+                        <button onClick={() => navigateToProject(p.id)} className="flex-1 truncate text-xs text-left min-w-0" title={`Resume last session in "${p.name}"`}>{p.name}</button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button onClick={(e) => e.stopPropagation()} className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded hover:bg-sidebar-accent transition-all">
+                              <MoreHorizontal className="w-3.5 h-3.5 text-sidebar-foreground/60" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent side="right" align="start" className="w-44 bg-popover border-border/60">
+                            <DropdownMenuItem onClick={() => toggleProjectPin(p.id)} className="gap-2 cursor-pointer text-xs">
+                              <Pin className="w-3.5 h-3.5" /> {isPinned ? "Unpin" : "Pin to top"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toggleProjectArchive(p.id)} className="gap-2 cursor-pointer text-xs">
+                              <Archive className="w-3.5 h-3.5" /> Archive
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleDeleteProject(p.id)} className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10">
+                              <Trash2 className="w-3.5 h-3.5" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    );
+                  })}
+
+                  {archivedProjectsCount > 0 && (
+                    <button onClick={() => setShowArchivedProjects((s) => !s)} className="flex items-center gap-1.5 px-2 py-1 text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/60 transition-colors w-full mt-1">
+                      <Archive className="w-3 h-3" />
+                      {showArchivedProjects ? "Hide" : "Show"} {archivedProjectsCount} archived projects
                     </button>
-                  ))}
+                  )}
+
+                  {showArchivedProjects && archivedProjects.map((p) => {
+                    const isActive = location === `/projects/${p.id}`;
+                    return (
+                      <div key={p.id} className={`group flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors mb-0.5 opacity-50 hover:opacity-100 w-full ${isActive ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-foreground/50 hover:bg-sidebar-accent/40"}`}>
+                        <Archive className="w-3.5 h-3.5 flex-shrink-0 opacity-40" />
+                        <button onClick={() => navigateToProject(p.id)} className="flex-1 truncate text-xs text-left min-w-0">{p.name}</button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="opacity-0 group-hover:opacity-100 flex-shrink-0 p-0.5 rounded hover:bg-sidebar-accent transition-all">
+                              <MoreHorizontal className="w-3.5 h-3.5 text-sidebar-foreground/60" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent side="right" align="start" className="w-44 bg-popover border-border/60">
+                            <DropdownMenuItem onClick={() => toggleProjectArchive(p.id)} className="gap-2 cursor-pointer text-xs">
+                              <ArchiveRestore className="w-3.5 h-3.5" /> Unarchive
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleDeleteProject(p.id)} className="gap-2 cursor-pointer text-xs text-destructive focus:text-destructive focus:bg-destructive/10">
+                              <Trash2 className="w-3.5 h-3.5" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
 
