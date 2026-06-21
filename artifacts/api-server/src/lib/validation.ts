@@ -467,11 +467,15 @@ export function validateReactJSX(code: string): ValidationResult {
   let hookViolationCount = 0;
   const hooks = ["useState", "useEffect", "useRef", "useCallback", "useMemo", "useContext", "useReducer"];
   hooks.forEach(hook => {
-    // Detect conditional call of hooks using broad regex checks
-    const regex = new RegExp(`(if|for|while|switch)\\s*\\([\\s\\S]*?\\)\\s*\\{[^\\}]*?${hook}\\s*\\(`, "g");
-    if (regex.test(clean)) {
-      errors.push(`React Hook Warning: "${hook}" is potentially called conditionally inside a condition, loop, or nested block.`);
-      hookViolationCount++;
+    // Detect conditional call of hooks using safe string indexing to avoid catastrophic backtracking
+    const hookIndex = clean.indexOf(hook + "(");
+    if (hookIndex !== -1) {
+      const start = Math.max(0, hookIndex - 150);
+      const precedingText = clean.substring(start, hookIndex);
+      if (/\b(if|for|while|switch)\b/.test(precedingText)) {
+        errors.push(`React Hook Warning: "${hook}" is potentially called conditionally inside a condition, loop, or nested block.`);
+        hookViolationCount++;
+      }
     }
   });
 
