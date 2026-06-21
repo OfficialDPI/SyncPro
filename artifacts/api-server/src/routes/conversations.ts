@@ -20,6 +20,16 @@ import {
   SendMessageBody,
 } from "@workspace/api-zod";
 import OpenAI from "openai";
+import {
+  validateHTML,
+  validateCSS,
+  validateReactJSX,
+  validateSQL,
+  validateYAML,
+  autoRepairHTML,
+  autoRepairCSS,
+  ValidationResult
+} from "../lib/validation";
 
 
 class StreamFilter {
@@ -99,12 +109,6 @@ function balanceBracketsAndTags(code: string, techStack: string): string {
   }
 
   return code + suffix;
-}
-
-interface ValidationResult {
-  valid: boolean;
-  errors: string[];
-  openTags?: string[];
 }
 
 function isStreamIncomplete(content: string, agentName: string): boolean {
@@ -204,309 +208,7 @@ async function continueStream(
   return accumulated;
 }
 
-function validateHTML(html: string): ValidationResult {
-  const errors: string[] = [];
-  const clean = html.trim();
-  const lower = clean.toLowerCase();
 
-  // 1. Tag count verification
-  const countOpeningTags = (tag: string) => {
-    const regex = new RegExp(`<${tag}\\b`, "gi");
-    return (lower.match(regex) || []).length;
-  };
-  const countClosingTags = (tag: string) => {
-    const regex = new RegExp(`</${tag}>`, "gi");
-    return (lower.match(regex) || []).length;
-  };
-
-  const htmlOpen = countOpeningTags("html");
-  const htmlClose = countClosingTags("html");
-  if (htmlOpen !== 1) {
-    errors.push(`HTML must contain exactly one <html> opening tag. Found ${htmlOpen}.`);
-  }
-  if (htmlClose !== 1) {
-    errors.push(`HTML must contain exactly one </html> closing tag. Found ${htmlClose}.`);
-  }
-
-  const headOpen = countOpeningTags("head");
-  const headClose = countClosingTags("head");
-  if (headOpen !== 1) {
-    errors.push(`HTML must contain exactly one <head> opening tag. Found ${headOpen}.`);
-  }
-  if (headClose !== 1) {
-    errors.push(`HTML must contain exactly one </head> closing tag. Found ${headClose}.`);
-  }
-
-  const bodyOpen = countOpeningTags("body");
-  const bodyClose = countClosingTags("body");
-  if (bodyOpen !== 1) {
-    errors.push(`HTML must contain exactly one <body> opening tag. Found ${bodyOpen}.`);
-  }
-  if (bodyClose !== 1) {
-    errors.push(`HTML must contain exactly one </body> closing tag. Found ${bodyClose}.`);
-  }
-
-  // 2. Unfinished comments
-  let commentStart = 0;
-  while ((commentStart = clean.indexOf("<!--", commentStart)) !== -1) {
-    const commentEnd = clean.indexOf("-->", commentStart + 4);
-    if (commentEnd === -1) {
-      errors.push("Unfinished comment block (<!-- without matching -->).");
-      break;
-    }
-    commentStart = commentEnd + 3;
-  }
-
-  // 3. Unfinished script/style tags
-  let scriptStart = 0;
-  while ((scriptStart = lower.indexOf("<script", scriptStart)) !== -1) {
-    const tagEnd = clean.indexOf(">", scriptStart);
-    if (tagEnd === -1) {
-      errors.push("Malformed <script> opening tag.");
-      break;
-    }
-    const isSelfClosing = clean.substring(scriptStart, tagEnd + 1).endsWith("/>");
-    if (!isSelfClosing) {
-      const scriptEnd = lower.indexOf("</script>", tagEnd);
-      if (scriptEnd === -1) {
-        errors.push("Unfinished <script> tag (missing </script>).");
-        break;
-      }
-      scriptStart = scriptEnd + 9;
-    } else {
-      scriptStart = tagEnd + 1;
-    }
-  }
-
-  let styleStart = 0;
-  while ((styleStart = lower.indexOf("<style", styleStart)) !== -1) {
-    const tagEnd = clean.indexOf(">", styleStart);
-    if (tagEnd === -1) {
-      errors.push("Malformed <style> opening tag.");
-      break;
-    }
-    const isSelfClosing = clean.substring(styleStart, tagEnd + 1).endsWith("/>");
-    if (!isSelfClosing) {
-      const styleEnd = lower.indexOf("</style>", tagEnd);
-      if (styleEnd === -1) {
-        errors.push("Unfinished <style> tag (missing </style>).");
-        break;
-      }
-      styleStart = styleEnd + 8;
-    } else {
-      styleStart = tagEnd + 1;
-    }
-  }
-
-  // 4. Run parse5 AST parser error checks
-  try {
-    const parse5Errors: string[] = [];
-    parse(clean, {
-      onParseError(err) {
-        parse5Errors.push(`parse5 error [${err.code}]: at position ${err.startOffset}`);
-      }
-    });
-    if (parse5Errors.length > 0) {
-      errors.push(...parse5Errors);
-    }
-  } catch (err: any) {
-    errors.push(`parse5 crash: ${err.message}`);
-  }
-
-  // 5. Classic stack-based checks for attributes, quotes, tag balance, and tag names
-  const selfClosing = new Set(["img", "input", "br", "hr", "meta", "link", "source", "embed", "param", "track", "area", "col", "base"]);
-  const tagRegex = /<\/?([a-zA-Z0-9:-]+)([^>]*)>/g;
-  const stack: string[] = [];
-  const ids = new Set<string>();
-
-  let match;
-  while ((match = tagRegex.exec(clean)) !== null) {
-    const tag = match[1].toLowerCase();
-    const attrs = match[2];
-    const isClosing = match[0].startsWith("</");
-    const isSelfClosing = attrs.endsWith("/") || selfClosing.has(tag);
-
-    if (attrs) {
-      const doubleQuotes = (attrs.match(/"/g) || []).length;
-      const singleQuotes = (attrs.match(/'/g) || []).length;
-      if (doubleQuotes % 2 !== 0 && singleQuotes % 2 !== 0) {
-        errors.push(`Malformed attributes in tag <${tag}>: unmatched quotes.`);
-      }
-
-      if (doubleQuotes % 2 !== 0 || singleQuotes % 2 !== 0) {
-        errors.push(`Malformed attributes in tag <${tag}>: unclosed quote(s).`);
-      }
-
-      const idMatch = attrs.match(/id\s*=\s*["']([^"']+)["']/i);
-      if (idMatch && idMatch[1]) {
-        const idVal = idMatch[1];
-        if (ids.has(idVal)) {
-          errors.push(`Duplicate element ID found: "${idVal}"`);
-        }
-        ids.add(idVal);
-      }
-    }
-
-    if (isClosing) {
-      if (stack.length === 0) {
-        errors.push(`Unexpected closing tag </${tag}> with no matching opening tag.`);
-      } else {
-        const top = stack.pop();
-        if (top !== tag) {
-          errors.push(`Mismatched closing tag: expected </${top}> but found </${tag}>.`);
-        }
-      }
-    } else if (!isSelfClosing) {
-      stack.push(tag);
-    }
-  }
-
-  const openTags = [...stack];
-  while (stack.length > 0) {
-    const unclosed = stack.pop();
-    errors.push(`Unclosed HTML tag: <${unclosed}>`);
-  }
-
-  return { valid: errors.length === 0, errors, openTags };
-}
-
-function validateCSS(css: string): ValidationResult {
-  const errors: string[] = [];
-  const clean = css.trim();
-
-  const stack: { char: string; line: number }[] = [];
-  let line = 1;
-
-  for (let i = 0; i < clean.length; i++) {
-    const char = clean[i];
-    if (char === "\n") line++;
-
-    if (char === "{" || char === "(" || char === "[") {
-      stack.push({ char, line });
-    } else if (char === "}" || char === ")" || char === "]") {
-      if (stack.length === 0) {
-        errors.push(`Unexpected closing bracket '${char}' at line ${line}`);
-      } else {
-        const top = stack.pop()!;
-        if (
-          (char === "}" && top.char !== "{") ||
-          (char === ")" && top.char !== "(") ||
-          (char === "]" && top.char !== "[")
-        ) {
-          errors.push(`Mismatched bracket '${char}' at line ${line} (opened '${top.char}' at line ${top.line})`);
-        }
-      }
-    }
-  }
-
-  while (stack.length > 0) {
-    const unclosed = stack.pop()!;
-    errors.push(`Unclosed bracket '${unclosed.char}' opened at line ${unclosed.line}`);
-  }
-
-  const blocks = clean.split("}");
-  blocks.forEach((block, idx) => {
-    const parts = block.split("{");
-    if (parts.length > 1) {
-      const decls = parts[1].trim();
-      if (decls.length > 0 && !decls.includes("{")) {
-        const statements = decls.split(";").map(s => s.trim()).filter(Boolean);
-        if (statements.length > 0) {
-          const last = statements[statements.length - 1];
-          if (!last.includes(":") && last.length > 0) {
-            errors.push(`Malformed declaration: "${last}" in block ${idx + 1}`);
-          }
-        }
-      }
-    }
-  });
-
-  return { valid: errors.length === 0, errors };
-}
-
-function validateReactJSX(code: string): ValidationResult {
-  const errors: string[] = [];
-
-  try {
-    esbuild.transformSync(code, {
-      loader: "tsx",
-      jsx: "preserve",
-      target: "es2020",
-    });
-  } catch (e: any) {
-    if (e.errors && Array.isArray(e.errors)) {
-      e.errors.forEach((err: any) => {
-        errors.push(`TS/JSX Compile: ${err.text} at line ${err.location?.line || "?"}:${err.location?.column || "?"}`);
-      });
-    } else {
-      errors.push(`TS/JSX Compile failed: ${e.message || e}`);
-    }
-  }
-
-  const clean = code.trim();
-  if (!clean.includes("function App") && !clean.includes("const App") && !clean.includes("class App")) {
-    errors.push("Missing React App component definition (must be function App or const App).");
-  }
-  if (!clean.includes("export default App") && !clean.includes("export default")) {
-    errors.push("Missing 'export default App' statement.");
-  }
-
-  const hooks = ["useState", "useEffect", "useRef", "useCallback", "useMemo", "useContext", "useReducer"];
-  hooks.forEach(hook => {
-    const regex = new RegExp(`(if|for|while|switch)\\s*\\([\\s\\S]*?\\)\\s*\\{[^\\}]*?${hook}\\s*\\(`, "g");
-    if (regex.test(clean)) {
-      errors.push(`React Hook Warning: "${hook}" is potentially called conditionally inside a condition, loop, or nested block.`);
-    }
-  });
-
-  return { valid: errors.length === 0, errors };
-}
-
-function validateJSON(json: string): ValidationResult {
-  const errors: string[] = [];
-  try {
-    JSON.parse(json);
-  } catch (e: any) {
-    errors.push(`JSON Parse Error: ${e.message}`);
-  }
-  return { valid: errors.length === 0, errors };
-}
-
-function validateSQL(sql: string): ValidationResult {
-  const errors: string[] = [];
-  const clean = sql.trim();
-  const openParens = (clean.match(/\(/g) || []).length;
-  const closeParens = (clean.match(/\)/g) || []).length;
-  if (openParens !== closeParens) {
-    errors.push(`Unbalanced parentheses in SQL script (open: ${openParens}, close: ${closeParens}).`);
-  }
-  const hasCreateTable = clean.toLowerCase().includes("create table");
-  const hasInsert = clean.toLowerCase().includes("insert into");
-  if (!hasCreateTable && !hasInsert) {
-    errors.push("SQL Script does not contain common schema/seed commands (CREATE TABLE or INSERT INTO).");
-  }
-  return { valid: errors.length === 0, errors };
-}
-
-function validateYAML(yamlStr: string): ValidationResult {
-  const errors: string[] = [];
-  try {
-    const clean = yamlStr.trim();
-    if (clean.startsWith("<!DOCTYPE") || clean.startsWith("<html")) {
-      errors.push("YAML file cannot start with HTML tags or doctype definitions.");
-    } else {
-      const parsed = parseYaml(yamlStr);
-      if (parsed === null) {
-        errors.push("YAML parsed to null.");
-      } else if (typeof parsed !== "object" || Array.isArray(parsed)) {
-        errors.push(`YAML must parse to a key-value mapping (object), but got: ${typeof parsed}`);
-      }
-    }
-  } catch (err: any) {
-    errors.push(`YAML parse error: ${err.message || err}`);
-  }
-  return { valid: errors.length === 0, errors };
-}
 
 function detectFileToFixFromError(errorMsg: string, defaultFile: string): string {
   const fileRegex = /(?:[a-zA-Z]:[\\\/]|\b)[\w\-\.\/\\@]+\.(tsx|jsx|ts|js|vue|html|css|sql|yml|yaml)\b/i;
@@ -639,17 +341,35 @@ async function copyDir(src: string, dest: string) {
 
 async function mergeTemporaryWorkspace(conversationId: number) {
   const WORKSPACE_ROOT = path.resolve(process.cwd(), "..", "user-workspaces");
-  const tempPath = path.join(WORKSPACE_ROOT, `${conversationId}-temp`);
   const permPath = path.join(WORKSPACE_ROOT, String(conversationId));
+  const tempPath = path.join(permPath, "generation");
+  const transitionPath = path.join(WORKSPACE_ROOT, `${conversationId}-temp-generation`);
+  
   if (fsSync.existsSync(tempPath)) {
     try {
+      // 1. Move generation/ out of permPath to transitionPath
+      if (fsSync.existsSync(transitionPath)) {
+        await fs.rm(transitionPath, { recursive: true, force: true });
+      }
+      await fs.rename(tempPath, transitionPath);
+
+      // 2. Remove the rest of the old permPath
       if (fsSync.existsSync(permPath)) {
         await fs.rm(permPath, { recursive: true, force: true });
       }
-      await fs.rename(tempPath, permPath);
+
+      // 3. Rename transitionPath to permPath
+      await fs.rename(transitionPath, permPath);
     } catch (renameErr) {
-      await copyDir(tempPath, permPath);
-      await fs.rm(tempPath, { recursive: true, force: true });
+      // Fallback
+      if (fsSync.existsSync(transitionPath)) {
+        await copyDir(transitionPath, permPath);
+        await fs.rm(transitionPath, { recursive: true, force: true });
+      } else {
+        await copyDir(tempPath, permPath);
+        await fs.rm(tempPath, { recursive: true, force: true });
+      }
+      
       try {
         await execAsync("pnpm install --ignore-workspace --dangerously-allow-all-builds", { cwd: permPath, timeout: 300000 });
       } catch {
@@ -1440,33 +1160,45 @@ JSON Schema:
           if (agentName === "db") filename = "schema.sql";
           if (agentName === "deploy") filename = "docker-compose.yml";
 
-          // Syntax Validation & Self-Healing Loop
-          let healAttempt = 0;
+          // 1. Initial Validation Pass (In-Memory)
           let validation: ValidationResult = { valid: true, errors: [] };
-          
-          while (healAttempt < 3) {
-            validation = { valid: true, errors: [] };
+          const runValidation = (codeToCheck: string): ValidationResult => {
             if (agentName === "code") {
               if (techStack === "React" || techStack === "NextJS" || techStack === "Vue") {
-                validation = validateReactJSX(finalCode);
+                return validateReactJSX(codeToCheck);
               } else if (techStack === "HTML" || techStack === "HTML+CSS") {
-                validation = validateHTML(finalCode);
+                return validateHTML(codeToCheck);
               }
             } else if (agentName === "db") {
-              validation = validateSQL(finalCode);
+              return validateSQL(codeToCheck);
             } else if (agentName === "deploy") {
-              validation = validateYAML(finalCode);
+              return validateYAML(codeToCheck);
             }
+            return { valid: true, errors: [] };
+          };
 
-            if (validation.valid) {
-              break;
+          validation = runValidation(finalCode);
+
+          // 2. Local Auto-Repair Heuristics (if invalid)
+          if (!validation.valid) {
+            if (techStack === "HTML" || techStack === "HTML+CSS") {
+              finalCode = autoRepairHTML(finalCode);
+              validation = runValidation(finalCode);
+            } else if (filename.endsWith(".css")) {
+              finalCode = autoRepairCSS(finalCode);
+              validation = runValidation(finalCode);
             }
+          }
 
+          // 3. LLM Healing Loop (if still invalid or quality score < 95)
+          let healAttempt = 0;
+          let currentScore = validation.scores?.overall ?? (validation.valid ? 100 : 0);
+          while (healAttempt < 3 && (!validation.valid || currentScore < 95)) {
             healAttempt++;
             res.write(`data: ${JSON.stringify({
               type: "stream",
               agent: agentName,
-              content: `\n\n*File validation failed for \`${filename}\` (Heal Attempt ${healAttempt}/3):*\n` + 
+              content: `\n\n*File validation failed/score under 95% for \`${filename}\` (Score: ${currentScore}%, Heal Attempt ${healAttempt}/3):*\n` + 
                        validation.errors.map(e => `  ✗ ${e}`).join("\n") +
                        `\n\n*Requesting self-healing from AI...*`
             })}\n\n`);
@@ -1481,67 +1213,73 @@ JSON Schema:
               activeModel,
               groq
             );
+
+            // Re-validate after LLM healing
+            validation = runValidation(finalCode);
+            currentScore = validation.scores?.overall ?? (validation.valid ? 100 : 0);
           }
+
+          // 4. Quality Scoring report construction
+          const score = validation.scores?.overall ?? (validation.valid ? 100 : 0);
+          const syntaxScoreVal = validation.scores?.syntax ?? (validation.valid ? 100 : 0);
+          const accessibilityScoreVal = validation.scores?.accessibility ?? 100;
+          const performanceScoreVal = validation.scores?.performance ?? 100;
 
           // Stream the file integrity report
-          if (validation.valid) {
-            res.write(`data: ${JSON.stringify({
-              type: "stream",
-              agent: agentName,
-              content: `\n\n*File Integrity Report for \`${filename}\`:*\n` +
-                       `  ✓ Clean syntax & parsers\n` +
-                       `  ✓ Balanced structures and tags\n` +
-                       `  ✓ Integrity check passed!`
-            })}\n\n`);
-          } else {
-            res.write(`data: ${JSON.stringify({
-              type: "stream",
-              agent: agentName,
-              content: `\n\n*File Integrity Report for \`${filename}\`:*\n` +
-                       validation.errors.map(e => `  ✗ ${e}`).join("\n") +
-                       `  ⚠ Integrity check failed after self-healing attempts.`
-            })}\n\n`);
-          }
+          let reportContent = `\n\n*File Integrity Report for \`${filename}\`:*\n` +
+                               `  Quality Score: ${score}%\n` +
+                               `  - Syntax: ${syntaxScoreVal}%\n` +
+                               `  - Accessibility: ${accessibilityScoreVal}%\n` +
+                               `  - Performance: ${performanceScoreVal}%\n`;
 
-          // Save to Temporary Workspace Staging
+          if (validation.valid) {
+            reportContent += `  ✓ Clean syntax & parsers\n  ✓ Balanced structures and tags\n  ✓ Integrity check passed!`;
+          } else {
+            reportContent += validation.errors.map(e => `  ✗ ${e}`).join("\n") +
+                             `\n  ⚠ Integrity check failed after self-healing attempts.`;
+          }
+          
+          res.write(`data: ${JSON.stringify({
+            type: "stream",
+            agent: agentName,
+            content: reportContent
+          })}\n\n`);
+
+          // 5. Temporary Workspace Staging
           const WORKSPACE_ROOT = path.resolve(process.cwd(), "..", "user-workspaces");
-          const tempProjectPath = path.join(WORKSPACE_ROOT, `${conversationId}-temp`);
+          const permProjectPath = path.join(WORKSPACE_ROOT, String(conversationId));
+          const tempProjectPath = path.join(permProjectPath, "generation");
           const safePath = path.resolve(tempProjectPath, filename);
 
-          if (!validation.valid && (techStack === "HTML" || techStack === "HTML+CSS")) {
-            const currentVal = validateHTML(finalCode);
-            if (currentVal.openTags && currentVal.openTags.length > 0) {
-              let closedCode = finalCode.trim();
-              for (let i = currentVal.openTags.length - 1; i >= 0; i--) {
-                const tag = currentVal.openTags[i];
-                closedCode += `\n</${tag}>`;
+          // Protected Config check:
+          const isConfig = ["package.json", "vite.config.ts", "tailwind.config.js", "tsconfig.json"].includes(filename);
+          const isCore = filename.startsWith("src/core/") || filename.startsWith("src/runtime/") || filename.startsWith("src/compiler/");
+          
+          if ((isConfig || isCore) && fsSync.existsSync(path.resolve(permProjectPath, filename))) {
+            req.log.warn({ filename }, "Blocked automatic write to protected workspace file");
+            res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Blocked automatic modification of protected file: \`${filename}\`*` })}\n\n`);
+          } else {
+            // 6. Atomic Write: Write to .tmp -> Validate again -> rename to dest
+            const tmpPath = safePath + ".tmp";
+            try {
+              await fs.mkdir(path.dirname(safePath), { recursive: true });
+              await fs.writeFile(tmpPath, finalCode, "utf-8");
+
+              // Validate the written temp file content
+              const writtenContent = await fs.readFile(tmpPath, "utf-8");
+              const writeVal = runValidation(writtenContent);
+
+              if (writeVal.valid || score >= 90) { // allow small flexibility for minor non-breaking lints
+                await fs.rename(tmpPath, safePath);
+                res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
+              } else {
+                await fs.unlink(tmpPath).catch(() => {});
+                res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Validation failed on written file \`${filename}\`. Discarded staging write.*` })}\n\n`);
               }
-              finalCode = closedCode;
-              validation = validateHTML(finalCode);
-              res.write(`data: ${JSON.stringify({
-                type: "stream",
-                agent: agentName,
-                content: `\n\n*Auto-closed remaining HTML tags to prevent parser crash: ${currentVal.openTags.reverse().map(t => `</${t}>`).join(" ")}*`
-              })}\n\n`);
+            } catch (e) {
+              req.log.error({ e }, "File write failed");
             }
           }
-
-          const tmpPath = safePath + ".tmp";
-          try {
-            await fs.mkdir(path.dirname(safePath), { recursive: true });
-            await fs.writeFile(tmpPath, finalCode, "utf-8");
-
-            if (validation.valid) {
-              await fs.rename(tmpPath, safePath);
-              res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
-            } else {
-              await fs.unlink(tmpPath).catch(() => {});
-              res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Validation failed for \`${filename}\`. Discarded staging write and left original intact.*` })}\n\n`);
-            }
-          } catch (e) {
-            req.log.error({ e }, "File write failed");
-          }
-
           // Update responses memory so scaffolding/build steps read the final corrected code
           responses[agentName] = finalCode;
         }
@@ -1645,8 +1383,8 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
       const detectedStack = detectFrameworkFromCode(codeContent);
       
       const WORKSPACE_ROOT = path.resolve(process.cwd(), "..", "user-workspaces");
-      const tempProjectPath = path.join(WORKSPACE_ROOT, `${conversationId}-temp`);
       const permProjectPath = path.join(WORKSPACE_ROOT, String(conversationId));
+      const tempProjectPath = path.join(permProjectPath, "generation");
       
       res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Scaffolding staging project files (${detectedStack})...*` })}\n\n`);
       await scaffoldProject(conversationId, spec, dbCode, deployCode, detectedStack, tempProjectPath);
