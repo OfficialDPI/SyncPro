@@ -37,6 +37,8 @@ These files define how the application builds, runs, and routes. Any modificatio
 | `scripts/restore-snapshot.cjs` | Restore system |
 | `scripts/check-versions.cjs` | Version validator |
 | `.agents/AGENTS.md` | These rules |
+| `artifacts/api-server/src/lib/validation.ts` | **PERMANENTLY LOCKED — read-only on disk (local + remote). Fixed critical esbuild blocking bug. NEVER modify.** |
+| `artifacts/api-server/src/routes/conversations.ts` | **PERMANENTLY LOCKED — read-only on disk (local + remote). Fixed safeEnd recursion crash. NEVER modify.** |
 
 ---
 
