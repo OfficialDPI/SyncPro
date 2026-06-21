@@ -24,14 +24,14 @@ export default function Terms() {
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-foreground mb-3">Terms of Service</h1>
-          <p className="text-sm text-muted-foreground">Demure Platform Inc. · Last updated: {LAST_UPDATED}</p>
+          <p className="text-sm text-muted-foreground">Demure Platforms, Inc. · Last updated: {LAST_UPDATED}</p>
         </div>
 
         <div className="prose prose-invert max-w-none space-y-10 text-sm leading-relaxed">
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">1. Acceptance of Terms</h2>
-            <p className="text-muted-foreground">By accessing or using Sync ("the Service"), a product of Demure Platform Inc. ("Company", "we", "us"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
+            <p className="text-muted-foreground">By accessing or using Sync ("the Service"), a product of Demure Platforms, Inc. ("Company", "we", "us"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
           </section>
 
           <section>
@@ -65,8 +65,8 @@ export default function Terms() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">5. Intellectual Property</h2>
             <div className="space-y-2 text-muted-foreground">
-              <p>5.1. <strong className="text-foreground">Your content:</strong> You retain ownership of the prompts you provide and the websites generated for you. By using the Service, you grant Demure Platform Inc. a non-exclusive license to store, display, and process your content to provide the Service.</p>
-              <p>5.2. <strong className="text-foreground">Our platform:</strong> The Sync platform, branding, and underlying infrastructure are the intellectual property of Demure Platform Inc. You may not copy, modify, or redistribute the platform.</p>
+              <p>5.1. <strong className="text-foreground">Your content:</strong> You retain ownership of the prompts you provide and the websites generated for you. By using the Service, you grant Demure Platforms, Inc. a non-exclusive license to store, display, and process your content to provide the Service.</p>
+              <p>5.2. <strong className="text-foreground">Our platform:</strong> The Sync platform, branding, and underlying infrastructure are the intellectual property of Demure Platforms, Inc. You may not copy, modify, or redistribute the platform.</p>
               <p>5.3. <strong className="text-foreground">AI outputs:</strong> Generated website code is provided as-is. We make no warranty that outputs do not infringe third-party rights.</p>
             </div>
           </section>
@@ -84,7 +84,7 @@ export default function Terms() {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">7. Limitation of Liability</h2>
-            <p className="text-muted-foreground">TO THE MAXIMUM EXTENT PERMITTED BY LAW, DEMURE PLATFORM INC. SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OF THE SERVICE. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM.</p>
+            <p className="text-muted-foreground">TO THE MAXIMUM EXTENT PERMITTED BY LAW, DEMURE PLATFORMS, INC. SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OF THE SERVICE. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM.</p>
           </section>
 
           <section>
@@ -103,7 +103,7 @@ export default function Terms() {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">10. Governing Law</h2>
-            <p className="text-muted-foreground">These Terms are governed by the laws of the jurisdiction in which Demure Platform Inc. is incorporated. Disputes shall be resolved through binding arbitration, except where prohibited by law.</p>
+            <p className="text-muted-foreground">These Terms are governed by the laws of the jurisdiction in which Demure Platforms, Inc. is incorporated. Disputes shall be resolved through binding arbitration, except where prohibited by law.</p>
           </section>
 
           <section>
@@ -113,7 +113,7 @@ export default function Terms() {
 
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">12. Contact</h2>
-            <p className="text-muted-foreground">For questions about these Terms, contact us at <a href="mailto:legal@sync.demure.ai" className="text-primary hover:underline">legal@sync.demure.ai</a>.</p>
+            <p className="text-muted-foreground">For questions about these Terms, contact us at <a href="mailto:legal@sync.demuregram.app" className="text-primary hover:underline">legal@sync.demuregram.app</a>.</p>
           </section>
 
         </div>
@@ -121,7 +121,7 @@ export default function Terms() {
 
       <footer className="border-t border-border/30 px-6 py-8">
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-xs text-muted-foreground">© 2025 Demure Platform Inc. All rights reserved.</span>
+          <span className="text-xs text-muted-foreground">© 2026 Demure Platforms, Inc. All rights reserved.</span>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link href="/privacy"><span className="hover:text-foreground cursor-pointer">Privacy Policy</span></Link>
             <Link href="/about"><span className="hover:text-foreground cursor-pointer">About</span></Link>

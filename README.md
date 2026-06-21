@@ -1,11 +1,20 @@
-# SyncPro | Next-Gen AI-Powered Development Workspace & Instant App Deployment
+# Sync (formerly Demuregram) | Next-Gen AI-Powered Development Workspace & Instant App Deployment
 
-[![SyncPro SEO Platform](https://img.shields.io/badge/SEO-Rank_1-purple.svg?style=for-the-badge)](https://syncpro.ai)
+[![Sync Platform](https://img.shields.io/badge/Platform-Sync-purple.svg?style=for-the-badge)](https://sync.demuregram.app)
+[![Company](https://img.shields.io/badge/Company-Demure_Platforms-blue.svg?style=for-the-badge)](https://sync.demuregram.app)
 [![Vite v7](https://img.shields.io/badge/Vite-v7-blue.svg?style=for-the-badge)](https://vite.dev)
 [![React v19](https://img.shields.io/badge/React-v19-cyan.svg?style=for-the-badge)](https://react.dev)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4-38bdf8.svg?style=for-the-badge)](https://tailwindcss.com)
 
-SyncPro is a state-of-the-art, next-generation AI-powered collaborative development platform designed to translate natural language prompts into secure, fully operational, full-stack web applications. By integrating real-time code generation, semantic syntax verification, interactive database design, and instant serverless deployment, SyncPro provides developers and organizations with a zero-configuration sandbox to go from concept to production in seconds.
+**Sync** (formerly known as **Demuregram**) is a state-of-the-art, next-generation AI-powered collaborative development platform designed to translate natural language prompts into secure, fully operational, full-stack web applications. By integrating real-time code generation, semantic syntax verification, interactive database design, and instant serverless deployment, Sync provides developers and organizations with a zero-configuration sandbox to go from concept to production in seconds. Developed and owned by **Demure Platforms, Inc.**
+
+---
+
+## 🔒 Security & Privacy Policy (PROPRIETARY)
+
+> [!IMPORTANT]
+> **This repository is strictly private, confidential, and proprietary to Demure Platforms, Inc.**
+> Unauthorized access, copying, editing, modifying, distribution, publishing, or redistribution of these files or any portion thereof, via any medium, is strictly prohibited. All rights reserved by Demure Platforms, Inc.
 
 ---
 
@@ -23,18 +32,22 @@ SyncPro is a state-of-the-art, next-generation AI-powered collaborative developm
 - **Dynamic Database Explorer**: Scaffolds clean schemas, executes PostgreSQL queries, and visualizes schemas in real-time.
 - **Data Integration**: Standardize schema designs and hook up API servers seamlessly.
 
-### 🌐 4. 1-Click Serverless Deployments
+### 💬 4. Demuregram Collaboration Hub
+- **Real-Time Sync**: Chat, share code segments, and review sandboxed live application builds in real-time directly through Demuregram.
+- **Agent Interactivity**: Connect with AI pair programmers and compilers in a single, unified interface.
+
+### 🌐 5. 1-Click Serverless Deployments
 - **Instant CDN Hosting**: Deploy staging apps to a global CDN immediately.
 - **Configurable Environments**: Optimize build bundles and deploy production code on demand.
 
-### 🔒 5. strict Build Protection & Quality Gates
+### 🔒 6. Strict Build Protection & Quality Gates
 - **12-Step Validation Pipeline**: Every commit undergoes strict checking (file integrity, route isolation, registry completeness, TypeScript compilation validation) via an automated gatekeeper.
 
 ---
 
 ## 🛠️ Technology Stack
 
-SyncPro leverages a modern, ultra-fast tech stack:
+Sync leverages a modern, ultra-fast tech stack:
 - **Frontend**: React (TypeScript), Tailwind CSS v4, Lucide Icons, Wouter Router, React Markdown, Rehype Highlight.
 - **Backend / API**: Node.js, Fastify/Express, SQLite/LibSQL database, Drizzle ORM, Zod Schema Validators.
 - **Build / Tooling**: Vite, esbuild, pnpm workspace monorepo.
@@ -74,9 +87,4 @@ Ensure you have Node.js (v18+) and `pnpm` installed on your machine.
 
 ---
 
-## 🔒 Security & Privacy Policy
-SyncPro code and workspaces are kept fully private. This repository is configured to be private to prevent unauthorized access, ensuring intellectual property, credentials, database configurations, and proprietary code remain highly secure.
-
----
-
-*SyncPro is built to optimize software engineering workflows by bridging the gap between natural language prompts and clean, production-grade source code.*
+*Sync is built to optimize software engineering workflows by bridging the gap between natural language prompts and clean, production-grade source code. Owned and operated by Demure Platforms, Inc.*

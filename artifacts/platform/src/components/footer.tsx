@@ -10,7 +10,7 @@ export default function Footer() {
             <Zap className="w-3 h-3 text-primary-foreground" />
           </div>
           <span className="text-sm font-medium text-foreground">Sync</span>
-          <span className="text-xs text-muted-foreground/60 ml-1">by Demure Platform Inc.</span>
+          <span className="text-xs text-muted-foreground/60 ml-1">by Demure Platforms, Inc.</span>
         </div>
         <div className="flex items-center gap-5 text-xs text-muted-foreground/60">
           <Link href="/pricing"><span className="hover:text-foreground cursor-pointer transition-colors">Pricing</span></Link>
@@ -19,7 +19,7 @@ export default function Footer() {
           <Link href="/terms"><span className="hover:text-foreground cursor-pointer transition-colors">Terms</span></Link>
           <Link href="/privacy"><span className="hover:text-foreground cursor-pointer transition-colors">Privacy</span></Link>
         </div>
-        <div className="text-xs text-muted-foreground/40">© 2025 Demure Platform Inc.</div>
+        <div className="text-xs text-muted-foreground/40">© 2026 Demure Platforms, Inc.</div>
       </div>
     </footer>
   );

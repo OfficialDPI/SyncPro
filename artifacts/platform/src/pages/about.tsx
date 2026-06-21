@@ -33,36 +33,35 @@ export default function About() {
             <span className="text-primary">web development.</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Sync is made by Demure Platform Inc. — a company on a mission to make professional web development
+            Sync (formerly Demuregram) is developed by Demure Platforms, Inc. — a company on a mission to make professional web development
             accessible to everyone through the power of AI.
           </p>
         </div>
 
-        {/* Story */}
+        {/* Story & Demuregram */}
         <div className="prose prose-invert max-w-none mb-16">
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <div className="bg-card border border-border/40 rounded-2xl p-8">
-              <h2 className="text-xl font-bold text-foreground mb-4">Our Story</h2>
+              <h2 className="text-xl font-bold text-foreground mb-4">Our Story (formerly Demuregram)</h2>
               <p className="text-muted-foreground leading-relaxed text-sm">
-                Demure Platform Inc. was founded with a simple belief: the gap between having an idea and shipping
+                Demure Platforms, Inc. was founded with a simple belief: the gap between having an idea and shipping
                 it to the world is too wide. Talented people with brilliant ideas shouldn't need months of coding
                 experience to build and launch a professional website.
               </p>
               <p className="text-muted-foreground leading-relaxed text-sm mt-3">
-                Sync started as an experiment — what if you could describe a website in plain English and watch it
-                materialize in real-time? That experiment became a product. That product became our obsession.
+                Sync started as an experiment under its former name, Demuregram—what if you could describe a website in plain English and watch it
+                materialize in real-time? That experiment grew into our core engine, and that product has evolved into a complete, next-generation AI-powered development workspace.
               </p>
             </div>
             <div className="bg-card border border-border/40 rounded-2xl p-8">
               <h2 className="text-xl font-bold text-foreground mb-4">Our Mission</h2>
               <p className="text-muted-foreground leading-relaxed text-sm">
                 To compress the time from idea to live website from weeks to minutes. We believe every person with
-                an idea deserves a beautiful, functional web presence — and we're building the tools to make that
+                an idea deserves a beautiful, functional web presence—and we're building the tools to make that
                 universally true.
               </p>
               <p className="text-muted-foreground leading-relaxed text-sm mt-3">
-                We're AI-first, design-obsessed, and engineering-rigorous. Every build that ships from Sync should
-                look like it was made by a world-class design team — because it was.
+                With Sync, we are making web development collaborative, AI-first, design-obsessed, and engineering-rigorous. Every build that ships from our platform should look and feel world-class.
               </p>
             </div>
           </div>
@@ -112,8 +111,8 @@ export default function About() {
             <h3 className="font-semibold text-foreground mb-4">Company</h3>
             <dl className="space-y-3 text-sm">
               {[
-                { label: "Legal name", val: "Demure Platform Inc." },
-                { label: "Product", val: "Sync — AI Website Builder" },
+                { label: "Legal name", val: "Demure Platforms, Inc." },
+                { label: "Product", val: "Sync (formerly Demuregram)" },
                 { label: "Founded", val: "2025" },
                 { label: "Status", val: "Active" },
               ].map((d) => (
@@ -128,10 +127,10 @@ export default function About() {
             <h3 className="font-semibold text-foreground mb-4">Contact</h3>
             <div className="space-y-4 text-sm">
               {[
-                { label: "General", val: "hello@sync.demure.ai" },
-                { label: "Support", val: "support@sync.demure.ai" },
-                { label: "Press", val: "press@sync.demure.ai" },
-                { label: "Legal", val: "legal@sync.demure.ai" },
+                { label: "General", val: "hello@sync.demuregram.app" },
+                { label: "Support", val: "support@sync.demuregram.app" },
+                { label: "Press", val: "press@sync.demuregram.app" },
+                { label: "Legal", val: "legal@sync.demuregram.app" },
               ].map((c) => (
                 <div key={c.label} className="flex items-center justify-between">
                   <span className="text-muted-foreground">{c.label}</span>
@@ -159,7 +158,7 @@ export default function About() {
 
       <footer className="border-t border-border/30 px-6 py-8">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-xs text-muted-foreground">© 2025 Demure Platform Inc. All rights reserved.</span>
+          <span className="text-xs text-muted-foreground">© 2026 Demure Platforms, Inc. All rights reserved.</span>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link href="/terms"><span className="hover:text-foreground cursor-pointer">Terms</span></Link>
             <Link href="/privacy"><span className="hover:text-foreground cursor-pointer">Privacy</span></Link>

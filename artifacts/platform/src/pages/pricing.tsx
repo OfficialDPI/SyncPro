@@ -424,7 +424,7 @@ export default function Pricing() {
               <Zap className="w-3 h-3 text-primary-foreground" />
             </div>
             <span className="text-sm font-medium text-foreground">Sync</span>
-            <span className="text-xs text-muted-foreground ml-2">by Demure Platform Inc.</span>
+            <span className="text-xs text-muted-foreground ml-2">by Demure Platforms, Inc.</span>
           </div>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link href="/about"><span className="hover:text-foreground cursor-pointer transition-colors">About</span></Link>
@@ -432,7 +432,7 @@ export default function Pricing() {
             <Link href="/terms"><span className="hover:text-foreground cursor-pointer transition-colors">Terms</span></Link>
             <Link href="/privacy"><span className="hover:text-foreground cursor-pointer transition-colors">Privacy</span></Link>
           </div>
-          <div className="text-xs text-muted-foreground">© 2025 Demure Platform Inc.</div>
+          <div className="text-xs text-muted-foreground">© 2026 Demure Platforms, Inc.</div>
         </div>
       </footer>
     </div>

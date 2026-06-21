@@ -24,7 +24,7 @@ export default function Privacy() {
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-foreground mb-3">Privacy Policy</h1>
-          <p className="text-sm text-muted-foreground">Demure Platform Inc. · Last updated: {LAST_UPDATED}</p>
+          <p className="text-sm text-muted-foreground">Demure Platforms, Inc. · Last updated: {LAST_UPDATED}</p>
         </div>
 
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-10">
@@ -147,8 +147,8 @@ export default function Privacy() {
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-3">11. Contact</h2>
             <div className="text-muted-foreground space-y-1">
-              <p>Demure Platform Inc.</p>
-              <p>Privacy Officer: <a href="mailto:privacy@sync.demure.ai" className="text-primary hover:underline">privacy@sync.demure.ai</a></p>
+              <p>Demure Platforms, Inc.</p>
+              <p>Privacy Officer: <a href="mailto:privacy@sync.demuregram.app" className="text-primary hover:underline">privacy@sync.demuregram.app</a></p>
             </div>
           </section>
 
@@ -157,7 +157,7 @@ export default function Privacy() {
 
       <footer className="border-t border-border/30 px-6 py-8">
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-xs text-muted-foreground">© 2025 Demure Platform Inc. All rights reserved.</span>
+          <span className="text-xs text-muted-foreground">© 2026 Demure Platforms, Inc. All rights reserved.</span>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
             <Link href="/terms"><span className="hover:text-foreground cursor-pointer">Terms</span></Link>
             <Link href="/about"><span className="hover:text-foreground cursor-pointer">About</span></Link>

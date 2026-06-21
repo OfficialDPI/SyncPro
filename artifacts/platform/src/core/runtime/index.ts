@@ -6,7 +6,7 @@
 
 export const PLATFORM_VERSION = "1.0.0";
 export const PLATFORM_NAME = "Sync";
-export const PLATFORM_COMPANY = "Demure Platform Inc.";
+export const PLATFORM_COMPANY = "Demure Platforms, Inc.";
 
 // ── Environment ───────────────────────────────────────────────────────────────
 export const IS_DEV = import.meta.env.DEV;

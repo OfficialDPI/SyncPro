@@ -136,7 +136,7 @@ export default function Settings() {
         </button>
         <div>
           <h1 className="font-semibold text-foreground text-sm">Settings</h1>
-          <p className="text-xs text-muted-foreground">Demure Platform Inc. · Sync</p>
+          <p className="text-xs text-muted-foreground">Demure Platforms, Inc. · Sync</p>
         </div>
       </div>
 
@@ -305,7 +305,7 @@ export default function Settings() {
                 </div>
               </SectionCard>
 
-              <SectionCard title="Data & Privacy" desc="Control your data stored on Demure Platform Inc. servers.">
+              <SectionCard title="Data & Privacy" desc="Control your data stored on Demure Platforms, Inc. servers.">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/30">
                     <div>
@@ -621,12 +621,12 @@ export default function Settings() {
                 </div>
               </SectionCard>
 
-              <SectionCard title="Contact Support" desc="Get in touch with the Demure Platform team.">
+              <SectionCard title="Contact Support" desc="Get in touch with the Demure Platforms team.">
                 <div className="space-y-3">
                   {[
-                    { label: "General Support", val: "support@sync.demure.ai" },
-                    { label: "Billing Questions", val: "billing@sync.demure.ai" },
-                    { label: "Security Reports", val: "security@sync.demure.ai" },
+                    { label: "General Support", val: "support@sync.demuregram.app" },
+                    { label: "Billing Questions", val: "billing@sync.demuregram.app" },
+                    { label: "Security Reports", val: "security@sync.demuregram.app" },
                   ].map((c) => (
                     <div key={c.label} className="flex items-center justify-between text-sm py-2 border-b border-border/20 last:border-0">
                       <span className="text-muted-foreground">{c.label}</span>
@@ -639,8 +639,8 @@ export default function Settings() {
               <SectionCard title="About">
                 <div className="space-y-2 text-sm">
                   {[
-                    { label: "Product", val: "Sync — AI Website Builder" },
-                    { label: "Company", val: "Demure Platform Inc." },
+                    { label: "Product", val: "Sync (formerly Demuregram)" },
+                    { label: "Company", val: "Demure Platforms, Inc." },
                     { label: "Version", val: "1.0.0" },
                   ].map((i) => (
                     <div key={i.label} className="flex justify-between py-1.5 border-b border-border/20 last:border-0">
