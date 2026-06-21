@@ -431,26 +431,32 @@ export function validateCSS(css: string): ValidationResult {
 export function validateReactJSX(code: string): ValidationResult {
   const errors: string[] = [];
 
-  // 1. Esbuild Syntax Compile
+  // 1. Lightweight pattern-based syntax checks (non-blocking, no esbuild sync call)
+  // esbuild.transformSync was replaced because it blocks the Node.js event loop
+  // for several seconds on large files, causing HTTP timeouts.
   let compiles = true;
-  try {
-    esbuild.transformSync(code, {
-      loader: "tsx",
-      jsx: "preserve",
-      target: "es2020",
-    });
-  } catch (e: any) {
-    compiles = false;
-    if (e.errors && Array.isArray(e.errors)) {
-      e.errors.forEach((err: any) => {
-        errors.push(`TS/JSX Compile: ${err.text} at line ${err.location?.line || "?"}:${err.location?.column || "?"}`);
-      });
-    } else {
-      errors.push(`TS/JSX Compile failed: ${e.message || e}`);
-    }
-  }
 
   const clean = code.trim();
+
+  // Basic unmatched brace/bracket check
+  let braceCount = 0;
+  let parenCount = 0;
+  for (let i = 0; i < clean.length; i++) {
+    const c = clean[i];
+    if (c === "{") braceCount++;
+    else if (c === "}") braceCount--;
+    else if (c === "(") parenCount++;
+    else if (c === ")") parenCount--;
+  }
+  if (braceCount !== 0) {
+    errors.push(`Unbalanced braces: ${braceCount > 0 ? "unclosed {" : "extra }"} detected.`);
+    compiles = false;
+  }
+  if (parenCount !== 0) {
+    errors.push(`Unbalanced parentheses: ${parenCount > 0 ? "unclosed (" : "extra )"} detected.`);
+    compiles = false;
+  }
+
   let missingApp = false;
   let missingExport = false;
 
@@ -463,11 +469,10 @@ export function validateReactJSX(code: string): ValidationResult {
     missingExport = true;
   }
 
-  // 2. React Hooks Validations
+  // 2. React Hooks Validations (safe index-based, no catastrophic regex)
   let hookViolationCount = 0;
   const hooks = ["useState", "useEffect", "useRef", "useCallback", "useMemo", "useContext", "useReducer"];
   hooks.forEach(hook => {
-    // Detect conditional call of hooks using safe string indexing to avoid catastrophic backtracking
     const hookIndex = clean.indexOf(hook + "(");
     if (hookIndex !== -1) {
       const start = Math.max(0, hookIndex - 150);
