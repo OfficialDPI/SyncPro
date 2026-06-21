@@ -22,7 +22,7 @@ const execAsync = promisify(exec);
 function safeWrite(res: any, data: string) {
   if (res && res.writable && !res.writableEnded && !res.destroyed) {
     try {
-      safeWrite(res, data);
+      res.write(data);
     } catch (e) {
       // ignore
     }

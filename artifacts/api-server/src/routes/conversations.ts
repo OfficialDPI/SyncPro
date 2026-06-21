@@ -47,7 +47,17 @@ import {
 function safeWrite(res: any, data: string) {
   if (res && res.writable && !res.writableEnded && !res.destroyed) {
     try {
-      safeWrite(res, data);
+      res.write(data);
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
+function safeEnd(res: any) {
+  if (res && res.writable && !res.writableEnded && !res.destroyed) {
+    try {
+      safeEnd(res);
     } catch (e) {
       // ignore
     }
@@ -603,14 +613,14 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
     await db.insert(messagesTable).values({ conversationId, role: "assistant", content: finalContent });
     await db.update(conversationsTable).set({ updatedAt: new Date() }).where(eq(conversationsTable.id, conversationId));
     safeWrite(res, `data: ${JSON.stringify({ type: "done", done: true })}\n\n`);
-    res.end();
+    safeEnd(res);
   } catch (err) {
     req.log.error({ err }, "Failed to send message");
     if (!res.headersSent) {
       res.status(500).json({ error: "Internal server error" });
     } else {
       safeWrite(res, `data: ${JSON.stringify({ error: "Stream error" })}\n\n`);
-      res.end();
+      safeEnd(res);
     }
   }
 });
