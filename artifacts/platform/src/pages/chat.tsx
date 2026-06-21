@@ -1416,7 +1416,7 @@ export default function Chat() {
                 ) : (
                   <iframe
                     key={iframeKey}
-                    src={`http://${window.location.hostname}:5001/workspaces/${id}/index.html`}
+                    src={window.location.protocol === "https:" ? `/workspaces/${id}/index.html` : `http://${window.location.hostname}:5001/workspaces/${id}/index.html`}
                     className="w-full h-full border-none bg-[#0b0f17]"
                     sandbox="allow-scripts allow-forms"
                     title="Live Preview"
