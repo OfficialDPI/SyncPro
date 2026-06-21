@@ -44,6 +44,16 @@ import {
 
 
 
+function safeWrite(res: any, data: string) {
+  if (res && res.writable && !res.writableEnded && !res.destroyed) {
+    try {
+      safeWrite(res, data);
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
 const router = Router();
 
 function getGroqClient() {
@@ -316,7 +326,7 @@ JSON Schema:
             const filteredText = filter.filter(text);
             if (filteredText) {
               responses[agentName] += filteredText;
-              res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: filteredText })}\n\n`);
+              safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: filteredText })}\n\n`);
             }
           }
         }
@@ -390,7 +400,7 @@ JSON Schema:
           let currentScore = validation.scores?.overall ?? (validation.valid ? 100 : 0);
           while (healAttempt < 3 && (!validation.valid || currentScore < 95)) {
             healAttempt++;
-            res.write(`data: ${JSON.stringify({
+            safeWrite(res, `data: ${JSON.stringify({
               type: "stream",
               agent: agentName,
               content: `\n\n*File validation failed/score under 95% for \`${filename}\` (Score: ${currentScore}%, Heal Attempt ${healAttempt}/3):*\n` + 
@@ -434,7 +444,7 @@ JSON Schema:
                              `\n  ⚠ Integrity check failed after self-healing attempts.`;
           }
           
-          res.write(`data: ${JSON.stringify({
+          safeWrite(res, `data: ${JSON.stringify({
             type: "stream",
             agent: agentName,
             content: reportContent
@@ -452,7 +462,7 @@ JSON Schema:
           
           if ((isConfig || isCore) && fsSync.existsSync(path.resolve(permProjectPath, filename))) {
             req.log.warn({ filename }, "Blocked automatic write to protected workspace file");
-            res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Blocked automatic modification of protected file: \`${filename}\`*` })}\n\n`);
+            safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Blocked automatic modification of protected file: \`${filename}\`*` })}\n\n`);
           } else {
             // 6. Atomic Write: Write to .tmp -> Validate again -> rename to dest
             const tmpPath = safePath + ".tmp";
@@ -466,10 +476,10 @@ JSON Schema:
 
               if (writeVal.valid || score >= 90) { // allow small flexibility for minor non-breaking lints
                 await fs.rename(tmpPath, safePath);
-                res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
+                safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Wrote file to temporary staging: \`${filename}\`*` })}\n\n`);
               } else {
                 await fs.unlink(tmpPath).catch(() => {});
-                res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Validation failed on written file \`${filename}\`. Discarded staging write.*` })}\n\n`);
+                safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Validation failed on written file \`${filename}\`. Discarded staging write.*` })}\n\n`);
               }
             } catch (e) {
               req.log.error({ e }, "File write failed");
@@ -592,14 +602,14 @@ Before you write any code, you MUST think out loud inside <think>...</think> tag
 
     await db.insert(messagesTable).values({ conversationId, role: "assistant", content: finalContent });
     await db.update(conversationsTable).set({ updatedAt: new Date() }).where(eq(conversationsTable.id, conversationId));
-    res.write(`data: ${JSON.stringify({ type: "done", done: true })}\n\n`);
+    safeWrite(res, `data: ${JSON.stringify({ type: "done", done: true })}\n\n`);
     res.end();
   } catch (err) {
     req.log.error({ err }, "Failed to send message");
     if (!res.headersSent) {
       res.status(500).json({ error: "Internal server error" });
     } else {
-      res.write(`data: ${JSON.stringify({ error: "Stream error" })}\n\n`);
+      safeWrite(res, `data: ${JSON.stringify({ error: "Stream error" })}\n\n`);
       res.end();
     }
   }

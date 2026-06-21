@@ -19,6 +19,16 @@ import {
 
 const execAsync = promisify(exec);
 
+function safeWrite(res: any, data: string) {
+  if (res && res.writable && !res.writableEnded && !res.destroyed) {
+    try {
+      safeWrite(res, data);
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
 export class StreamFilter {
   private inThink = false;
   private buffer = "";
@@ -224,7 +234,7 @@ export async function continueStream(
   
   while (attempts < 3 && isStreamIncomplete(accumulated, agentName)) {
     attempts++;
-    res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Detecting premature truncation. Continuing generation (Attempt ${attempts}/3)...*` })}\n\n`);
+    safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: `\n\n*Detecting premature truncation. Continuing generation (Attempt ${attempts}/3)...*` })}\n\n`);
     
     const continueMessages = [
       { role: "system", content: systemPrompt },
@@ -246,7 +256,7 @@ export async function continueStream(
         const text = chunk.choices[0]?.delta?.content;
         if (text) {
           continuedChunk += text;
-          res.write(`data: ${JSON.stringify({ type: "stream", agent: agentName, content: text })}\n\n`);
+          safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: agentName, content: text })}\n\n`);
         }
       }
       
@@ -447,11 +457,11 @@ export async function runBuildOrchestrator(params: BuildOrchestratorParams): Pro
     const permProjectPath = path.join(WORKSPACE_ROOT, String(conversationId));
     const tempProjectPath = path.join(permProjectPath, "generation");
     
-    res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Scaffolding staging project files (${detectedStack})...*` })}\n\n`);
+    safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Scaffolding staging project files (${detectedStack})...*` })}\n\n`);
     await scaffoldProject(conversationId, spec, dbCode, deployCode, detectedStack, tempProjectPath);
     
     const installSuccess = await installDependencies(tempProjectPath, (msg) => {
-      res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*${msg}*` })}\n\n`);
+      safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*${msg}*` })}\n\n`);
     });
 
     if (installSuccess) {
@@ -461,7 +471,7 @@ export async function runBuildOrchestrator(params: BuildOrchestratorParams): Pro
 
       while (buildAttempt < 3) {
         const buildRes = await compileBuild(tempProjectPath, (msg) => {
-          res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*${msg}*` })}\n\n`);
+          safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*${msg}*` })}\n\n`);
         });
 
         if (buildRes.success) {
@@ -474,7 +484,7 @@ export async function runBuildOrchestrator(params: BuildOrchestratorParams): Pro
         log.error({ buildAttempt }, `Compilation failed (Attempt ${buildAttempt}/3)`);
         
         if (buildAttempt < 3) {
-          res.write(`data: ${JSON.stringify({
+          safeWrite(res, `data: ${JSON.stringify({
             type: "stream",
             agent: "code",
             content: `\n\n*Compilation failed (Attempt ${buildAttempt}/3). Initiating compiler auto-repair...*\n\`\`\`\n${lastBuildError}\n\`\`\``
@@ -551,7 +561,7 @@ export async function runBuildOrchestrator(params: BuildOrchestratorParams): Pro
       }
 
       if (compileSuccess) {
-        res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Staging build successful! Merging draft into project workspace...*` })}\n\n`);
+        safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Staging build successful! Merging draft into project workspace...*` })}\n\n`);
         responses.code += `\n\n*Compilation and build successful!*`;
         
         await mergeTemporaryWorkspace(conversationId);
@@ -563,7 +573,7 @@ export async function runBuildOrchestrator(params: BuildOrchestratorParams): Pro
         await discardWorkspaceSnapshot(conversationId);
         return true;
       } else {
-        res.write(`data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Compiler healing failed. Reverting changes...*` })}\n\n`);
+        safeWrite(res, `data: ${JSON.stringify({ type: "stream", agent: "code", content: `\n\n*Compiler healing failed. Reverting changes...*` })}\n\n`);
         responses.code += `\n\n*Compilation failed!*\n\`\`\`\n${lastBuildError}\n\`\`\``;
         
         // Transactional Failure: Discard broken generation path
