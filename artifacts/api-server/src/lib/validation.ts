@@ -184,6 +184,34 @@ export function validateHTML(html: string): ValidationResult {
     errors.push(`Unclosed HTML tag: <${unclosed}>`);
   }
 
+  // 6. Check for unterminated CSS strings and url() declarations inside <style> tags and style attributes
+  const styleTagRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gi;
+  let styleTagMatch;
+  while ((styleTagMatch = styleTagRegex.exec(clean)) !== null) {
+    const styleContent = styleTagMatch[1];
+    const cssErrors = checkCSSStringsAndUrls(styleContent);
+    if (cssErrors.length > 0) {
+      errors.push(...cssErrors.map(e => `Style block error: ${e}`));
+    }
+  }
+
+  // Scan style attributes inside tags
+  const tagRegexForStyle = /<[a-zA-Z0-9:-]+\b([^>]*)>/g;
+  let tagMatch;
+  while ((tagMatch = tagRegexForStyle.exec(clean)) !== null) {
+    const attrs = tagMatch[1];
+    if (attrs) {
+      const styleMatch = attrs.match(/style\s*=\s*(["'])([\s\S]*?)\1/i);
+      if (styleMatch && styleMatch[2]) {
+        const styleVal = styleMatch[2];
+        const cssErrors = checkCSSStringsAndUrls(styleVal);
+        if (cssErrors.length > 0) {
+          errors.push(...cssErrors.map(e => `Inline style error: ${e}`));
+        }
+      }
+    }
+  }
+
   // Quality scoring calculation (out of 100)
   // 1. Syntax Score (up to 100)
   let syntaxScore = 100;
@@ -366,6 +394,12 @@ export function validateCSS(css: string): ValidationResult {
       }
     }
   });
+
+  // 3. Check for unterminated CSS strings and url() declarations
+  const cssErrors = checkCSSStringsAndUrls(clean);
+  if (cssErrors.length > 0) {
+    errors.push(...cssErrors);
+  }
 
   // Quality scoring calculation (out of 100)
   let syntaxScore = 100;
@@ -587,6 +621,17 @@ export function autoRepairHTML(html: string): string {
     return start + cleanAttrs + (end || ">");
   });
 
+  // Repair style tags and style attributes
+  const styleTagRepairRegex = /(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi;
+  repaired = repaired.replace(styleTagRepairRegex, (match, openTag, styleContent, closeTag) => {
+    return openTag + autoRepairCSSStringsAndUrls(styleContent) + closeTag;
+  });
+
+  const styleAttrRepairRegex = /(\bstyle\s*=\s*)(["'])([\s\S]*?)\2/gi;
+  repaired = repaired.replace(styleAttrRepairRegex, (match, prefix, quote, styleVal) => {
+    return prefix + quote + autoRepairCSSStringsAndUrls(styleVal) + quote;
+  });
+
   // 3. Balance unclosed tags
   const val = validateHTML(repaired);
   if (val.openTags && val.openTags.length > 0) {
@@ -630,6 +675,7 @@ export function autoRepairHTML(html: string): string {
  */
 export function autoRepairCSS(css: string): string {
   let repaired = css.trim();
+  repaired = autoRepairCSSStringsAndUrls(repaired);
 
   // Balance open/close curly braces
   const openBraces = (repaired.match(/\{/g) || []).length;
@@ -662,4 +708,204 @@ export function autoRepairCSS(css: string): string {
   });
 
   return repairedBlocks.join("}");
+}
+
+/**
+ * Scans CSS/style text for unterminated double/single quotes and unclosed url() functions.
+ */
+export function checkCSSStringsAndUrls(css: string): string[] {
+  const errors: string[] = [];
+  const noComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // 1. Check for unterminated quotes
+  let inDouble = false;
+  let inSingle = false;
+  let doubleStart = -1;
+  let singleStart = -1;
+
+  for (let i = 0; i < noComments.length; i++) {
+    const char = noComments[i];
+    const prev = noComments[i - 1];
+
+    if (inDouble) {
+      if (char === '"' && prev !== '\\') {
+        inDouble = false;
+      }
+    } else if (inSingle) {
+      if (char === "'" && prev !== '\\') {
+        inSingle = false;
+      }
+    } else {
+      if (char === '"') {
+        inDouble = true;
+        doubleStart = i;
+      } else if (char === "'") {
+        inSingle = true;
+        singleStart = i;
+      }
+    }
+  }
+
+  if (inDouble) {
+    errors.push(`Unterminated double-quoted string in style declaration.`);
+  }
+  if (inSingle) {
+    errors.push(`Unterminated single-quoted string in style declaration.`);
+  }
+
+  // 2. Check for unterminated url()
+  let pos = 0;
+  while ((pos = noComments.indexOf("url(", pos)) !== -1) {
+    const start = pos;
+    pos += 4; // skip "url("
+
+    let quote = "";
+    if (noComments[pos] === "'" || noComments[pos] === '"') {
+      quote = noComments[pos];
+      pos++;
+    }
+
+    let foundEnd = false;
+    let scanPos = pos;
+    while (scanPos < noComments.length) {
+      if (quote) {
+        if (noComments[scanPos] === quote && noComments[scanPos - 1] !== "\\") {
+          let nextCharPos = scanPos + 1;
+          while (nextCharPos < noComments.length && /\s/.test(noComments[nextCharPos])) {
+            nextCharPos++;
+          }
+          if (noComments[nextCharPos] === ")") {
+            foundEnd = true;
+            pos = nextCharPos + 1;
+            break;
+          }
+        }
+      } else {
+        if (noComments[scanPos] === ")") {
+          foundEnd = true;
+          pos = scanPos + 1;
+          break;
+        }
+      }
+      scanPos++;
+    }
+
+    if (!foundEnd) {
+      errors.push(`Unterminated url() in style declaration starting with: "${noComments.substring(start, Math.min(start + 50, noComments.length))}"`);
+      break;
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Repairs unterminated CSS strings and url() declarations.
+ */
+export function autoRepairCSSStringsAndUrls(css: string): string {
+  let repaired = css;
+  const noComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // Check for unterminated quotes
+  let inDouble = false;
+  let inSingle = false;
+  let doubleStart = -1;
+  let singleStart = -1;
+
+  for (let i = 0; i < noComments.length; i++) {
+    const char = noComments[i];
+    const prev = noComments[i - 1];
+
+    if (inDouble) {
+      if (char === '"' && prev !== '\\') {
+        inDouble = false;
+      }
+    } else if (inSingle) {
+      if (char === "'" && prev !== '\\') {
+        inSingle = false;
+      }
+    } else {
+      if (char === '"') {
+        inDouble = true;
+        doubleStart = i;
+      } else if (char === "'") {
+        inSingle = true;
+        singleStart = i;
+      }
+    }
+  }
+
+  // Check for unterminated url()
+  let pos = 0;
+  let unterminatedUrlStart = -1;
+  let urlQuote = "";
+
+  while ((pos = noComments.indexOf("url(", pos)) !== -1) {
+    const start = pos;
+    pos += 4;
+
+    let quote = "";
+    if (noComments[pos] === "'" || noComments[pos] === '"') {
+      quote = noComments[pos];
+      pos++;
+    }
+
+    let foundEnd = false;
+    let scanPos = pos;
+    while (scanPos < noComments.length) {
+      if (quote) {
+        if (noComments[scanPos] === quote && noComments[scanPos - 1] !== "\\") {
+          let nextCharPos = scanPos + 1;
+          while (nextCharPos < noComments.length && /\s/.test(noComments[nextCharPos])) {
+            nextCharPos++;
+          }
+          if (noComments[nextCharPos] === ")") {
+            foundEnd = true;
+            pos = nextCharPos + 1;
+            break;
+          }
+        }
+      } else {
+        if (noComments[scanPos] === ")") {
+          foundEnd = true;
+          pos = scanPos + 1;
+          break;
+        }
+      }
+      scanPos++;
+    }
+
+    if (!foundEnd) {
+      unterminatedUrlStart = start;
+      urlQuote = quote;
+      break;
+    }
+  }
+
+  // If there's an unterminated url(), we close it at the end of the string
+  if (unterminatedUrlStart !== -1) {
+    if (urlQuote) {
+      repaired = repaired.trim();
+      if (!repaired.endsWith(urlQuote)) {
+        repaired += urlQuote;
+      }
+    }
+    repaired = repaired.trim();
+    if (!repaired.endsWith(")")) {
+      repaired += ")";
+    }
+    // Reset inSingle/inDouble state if they were set by this url's opening quote
+    if (urlQuote === "'") inSingle = false;
+    if (urlQuote === '"') inDouble = false;
+  }
+
+  // If quotes are still unbalanced, append the closing quote
+  if (inDouble) {
+    repaired = repaired.trim() + '"';
+  }
+  if (inSingle) {
+    repaired = repaired.trim() + "'";
+  }
+
+  return repaired;
 }
