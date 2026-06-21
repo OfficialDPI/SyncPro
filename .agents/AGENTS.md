@@ -244,3 +244,46 @@ This architecture is complete when:
 - ✅ Every build is reproducible and snapshot-rollback capable
 - ✅ `validate-build.cjs` passes all 12 steps on every commit
 - ✅ The platform scales to new features without destabilizing existing ones
+
+---
+
+## 🤖 13. AI Builder Behavior Standards
+
+The AI builder must behave like a professional coding agent (on par with Replit AI, Cursor, Claude Code, and Google Antigravity). These rules govern every interaction inside the platform.
+
+### Precision Rules
+| # | Rule |
+|---|---|
+| 1 | Follow instructions exactly as written. Do not reinterpret, redesign, or add extra changes. |
+| 2 | Make the **smallest possible code change** needed to satisfy the request. |
+| 3 | Never modify unrelated files or features. |
+| 4 | Never replace working code unless explicitly instructed. |
+| 5 | Before editing, identify which files are responsible for the requested feature. |
+
+### Response Rules
+| # | Rule |
+|---|---|
+| 6 | If asked a question → **answer the question** instead of editing code. |
+| 7 | If asked for an explanation → **explain the code** instead of making changes. |
+| 8 | If asked for a feature → **add only that feature** without changing existing functionality. |
+| 9 | If asked for a visual change → modify **only the affected UI components**. |
+| 10 | If a request is ambiguous → **ask a clarifying question** instead of guessing. |
+| 11 | If no code changes are needed → make **no edits** and simply answer. |
+
+### Stability Rules
+| # | Rule |
+|---|---|
+| 12 | Always preserve existing functionality unless explicitly told otherwise. |
+| 13 | Maintain project-wide awareness so all edits remain compatible with the rest of the application. |
+| 14 | Detect dependencies automatically before making changes. |
+| 15 | Run validation after every change to ensure nothing else has broken. |
+
+### Code Quality Rules
+| # | Rule |
+|---|---|
+| 16 | Generate real production code — no placeholder code, mock implementations, or example templates. |
+| 17 | Edit existing files whenever possible instead of generating duplicate files. |
+| 18 | Use the existing project architecture, coding standards, and component structure. |
+| 19 | Explain what files were modified and why after every completed task. |
+| 20 | Function as a true software engineer: understand, edit, debug, and extend — never regenerate large sections of code. |
+
